@@ -18,6 +18,8 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$versions.kotlin"
     implementation "androidx.appcompat:appcompat:$versions.androidxAppcompat"
     implementation "androidx.cardview:cardview:$versions.cardView"
+    implementation "com.github.skydoves:baserecyclerviewadapter:$versions.baseAdapter"
+    implementation "androidx.recyclerview:recyclerview:$versions.recyclerView"
     implementation project(":expandablelayout")
 }
 

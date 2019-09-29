@@ -13,5 +13,7 @@ ext.versions = [
     androidxAppcompat  : '1.1.0',
 
     // for demo
-    cardView           : '1.0.0'
+    cardView           : '1.0.0',
+    recyclerView       : '1.0.0',
+    baseAdapter        : '0.1.3'
 ]

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="46dp"
+  android:background="@color/background800"
+  android:foreground="?attr/selectableItemBackground"
+  android:orientation="vertical">
+
+  <TextView
+    android:id="@+id/row_title"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="12dp"
+    android:textColor="@color/white_93"
+    tools:text="Title" />
+
+  <View
+    android:layout_width="match_parent"
+    android:layout_height="0.7dp"
+    android:layout_alignParentBottom="true"
+    android:background="@color/white_93" />
+</RelativeLayout>
