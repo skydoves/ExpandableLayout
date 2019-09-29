@@ -67,7 +67,7 @@ Here is a basic example of implementing `ExpandableLayout`.
 ### Create using builder class
 We can create an instance of `ExpandableLayout` using the builder class.
 ```kotlin
-val myExpandableLayout = expandableLayout(this) {
+val myExpandableLayout = expandableLayout(context) {
   setParentLayoutResource(R.layout.layout_parent)
   setSecondLayoutResource(R.layout.layout_second)
   setShowSpinner(true)
@@ -91,10 +91,10 @@ expandablelayout.collapse() // collapse the second layout with indicator animati
 We can get the `parentLayout` and `secondLayout` of the `ExpandableLayout`.
 ```kotlin
 expandablelayout.parentLayout.setOnClickListener {
-  toast("parent layout is clicked!")
+  toast("the parent layout is clicked!")
 }
 expandablelayout.secondLayout.setOnClickListener {
-  toast("secondLayout layout is clicked!")
+  toast("the second layout is clicked!")
 }
 
 // getting child view using findViewById.
