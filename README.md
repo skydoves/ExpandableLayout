@@ -124,8 +124,23 @@ expandable.setOnExpandListener {
 }
 ```
 
+## ExpandableLayout Attributes
+Attributes | Type | Default | Description
+--- | --- | --- | ---
+isExpanded | Boolean | false | Expand the second layout initially or not.
+parentLayout | layout | default layout | Sets the parent layout.
+secondLayout | layout | default layout | Sets the second layout.
+duration | Long | 250L | Sets the duration of the spinner animation.
+spinner | Drawable | arrow_down | Sets the spinner's drawable.
+showSpinner | Boolean | true | Shows the spinner or not.
+Spinner_animate | Boolean | true | Animates the spinner when expanding or collapse.
+Spinner_rotation | Integer | -180 | Sets the rotation of the spinner animation.
+Spinner_size | Dimension | 36dp | Sets the size of the spinner.
+Spinner_margin | Dimension | 8dp | Sets the margin of the spinner.
+
 ## Find this library useful? :heart:
-Support it by joining __[stargazers](https://github.com/skydoves/ExpandableLayout/stargazers)__ for this repository. :star:
+Support it by joining __[stargazers](https://github.com/skydoves/ExpandableLayout/stargazers)__ for this repository. :star:<br>
+And __[follow](https://github.com/skydoves)__ me for my next creations! 🤩
 
 # License
 ```xml
