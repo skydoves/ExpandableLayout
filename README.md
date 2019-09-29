@@ -9,6 +9,10 @@
 🦚 An expandable layout that shows a two-level layout with an indicator.
 </p>
 
+<p align="center">
+<img src="https://user-images.githubusercontent.com/24237865/65829414-49c96d80-e2e0-11e9-8e92-45e1432dc26a.gif" width="32%"/>
+</p>
+
 ## Including in your project
 ### Gradle 
 Add below codes to your **root** `build.gradle` file (not your module build.gradle file).
