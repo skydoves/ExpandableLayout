@@ -15,6 +15,7 @@
 </p>
 
 ## Including in your project
+[![Jitpack](https://jitpack.io/v/skydoves/ExpandableLayout.svg)](https://jitpack.io/#skydoves/ExpandableLayout)
 ### Gradle 
 Add below codes to your **root** `build.gradle` file (not your module build.gradle file).
 ```gradle
