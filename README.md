@@ -15,6 +15,7 @@
 </p>
 
 ## Including in your project
+[![Download](https://api.bintray.com/packages/devmagician/maven/expandablelayout/images/download.svg) ](https://bintray.com/devmagician/maven/expandablelayout/_latestVersion)
 [![Jitpack](https://jitpack.io/v/skydoves/ExpandableLayout.svg)](https://jitpack.io/#skydoves/ExpandableLayout)
 ### Gradle 
 Add below codes to your **root** `build.gradle` file (not your module build.gradle file).
