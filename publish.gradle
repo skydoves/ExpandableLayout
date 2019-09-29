@@ -1,0 +1,13 @@
+apply plugin: 'com.novoda.bintray-release'
+apply from: '../dependencies.gradle'
+
+publish {
+    userOrg = 'devmagician'
+    groupId = 'com.github.skydoves'
+    artifactId = 'expandablelayout'
+    publishVersion = versions.versionName
+    desc = 'An expandable layout that shows a two-level layout with an indicator. '
+    website = 'https://github.com/skydoves/ExpandableLayout'
+    issueTracker = "${website}/issues"
+    repository = "${website}.git"
+}

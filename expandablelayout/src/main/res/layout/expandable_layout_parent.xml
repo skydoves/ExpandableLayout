@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  android:id="@+id/layout_parent"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content">
+
+  <FrameLayout
+    android:id="@+id/cover"
+    android:layout_width="match_parent"
+    android:layout_height="36dp" />
+
+  <ImageView
+    android:id="@+id/arrow"
+    android:layout_width="36dp"
+    android:layout_height="36dp"
+    android:layout_alignParentEnd="true"
+    android:layout_alignParentRight="true"
+    android:layout_centerVertical="true"
+    android:scaleType="fitXY"
+    android:src="@drawable/ic_arrow_down"
+    android:visibility="visible" />
+</RelativeLayout>

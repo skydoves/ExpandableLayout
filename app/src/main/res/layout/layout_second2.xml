@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  android:layout_width="match_parent"
+  android:layout_height="90dp"
+  android:orientation="vertical">
+
+  <androidx.cardview.widget.CardView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="4dp"
+    android:foreground="?attr/selectableItemBackground"
+    app:cardBackgroundColor="@color/background800"
+    app:cardCornerRadius="6dp">
+
+    <TextView
+      android:layout_width="wrap_content"
+      android:layout_height="match_parent"
+      android:padding="10dp"
+      android:text="Travelocity has some of the best prices on vacation packages guaranteed. Book your flight and hotel together to save money today!"
+      android:textColor="@color/white_93" />
+  </androidx.cardview.widget.CardView>
+</RelativeLayout>

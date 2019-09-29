@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  android:id="@+id/layout_cover"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  android:background="@color/skyBlue"
+  android:foreground="?attr/selectableItemBackground"
+  android:padding="16dp">
+
+  <TextView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_centerInParent="true"
+    android:layout_gravity="center_vertical"
+    android:text="This is the ExpandableLayout"
+    android:textColor="@color/white_87" />
+</RelativeLayout>

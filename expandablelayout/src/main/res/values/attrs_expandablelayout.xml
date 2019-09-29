@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <declare-styleable name="ExpandableLayout">
+    <attr name="expandable_isExpanded" format="boolean" />
+    <attr name="expandable_parentLayout" format="reference" />
+    <attr name="expandable_secondLayout" format="reference" />
+    <attr name="expandable_duration" format="integer" />
+    <attr name="expandable_spinner" format="reference" />
+    <attr name="expandable_showSpinner" format="boolean" />
+    <attr name="expandable_spinner_animate" format="boolean" />
+    <attr name="expandable_spinner_rotation" format="integer" />
+    <attr name="expandable_spinner_size" format="dimension" />
+    <attr name="expandable_spinner_margin" format="dimension" />
+  </declare-styleable>
+</resources>
