@@ -80,15 +80,15 @@ val myExpandableLayout = expandableLayout(context) {
 ```
 
 ### Expand and Collapse
-We can expand and collapse using the below methods.<br>
-And we can access child views of them.
+We can expand and collapse using the below methods.
 ```kotlin
 expandablelayout.expand() // expand the second layout with indicator animation.
 expandablelayout.collapse() // collapse the second layout with indicator animation.
 ```
 
 ### ParentLayout and SecondLayout
-We can get the `parentLayout` and `secondLayout` of the `ExpandableLayout`.
+We can get the `parentLayout` and `secondLayout` of the `ExpandableLayout`.<br>
+And we can access child views of them.
 ```kotlin
 expandablelayout.parentLayout.setOnClickListener {
   toast("the parent layout is clicked!")
@@ -108,7 +108,7 @@ expandablelayout.secondLayout.button0.setOnClickListener { toast("button0 clicke
 ### OnExpandListener
 We can listen to the `ExpandableLayout` is expanded or collapsed.
 ```kotlin
-expandablelayout..onExpandListener = object : OnExpandListener {
+expandablelayout.onExpandListener = object : OnExpandListener {
   override fun onExpand(isExpanded: Boolean) {
     toast("Expanded : $it")
   }
