@@ -22,24 +22,17 @@ import android.widget.FrameLayout
 
 /** makes visible or invisible a View align the value parameter. */
 internal fun View.visible(value: Boolean) {
-  if (value) {
-    this.visibility = View.VISIBLE
-  } else {
-    this.visibility = View.GONE
-  }
+    visibility = if (value) View.VISIBLE else View.GONE
 }
 
 /** dp size to px size. */
-internal fun View.dp2Px(dp: Int): Float {
-  val scale = resources.displayMetrics.density
-  return dp * scale
-}
+internal fun View.dp2Px(dp: Int) = dp * resources.displayMetrics.density
 
 /** updates [FrameLayout] params. */
 internal fun ViewGroup.updateLayoutParams(block: ViewGroup.LayoutParams.() -> Unit) {
-  layoutParams?.let {
-    val params: ViewGroup.LayoutParams =
-        (layoutParams as ViewGroup.LayoutParams).apply { block(this) }
-    layoutParams = params
-  }
+    layoutParams?.let {
+        val params: ViewGroup.LayoutParams =
+            (layoutParams as ViewGroup.LayoutParams).apply { block(this) }
+        layoutParams = params
+    }
 }

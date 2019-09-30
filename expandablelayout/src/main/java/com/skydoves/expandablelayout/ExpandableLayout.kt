@@ -31,250 +31,279 @@ import kotlinx.android.synthetic.main.expandable_layout_parent.view.*
 @Suppress("unused")
 class ExpandableLayout : FrameLayout {
 
-  lateinit var parentLayout: ViewGroup
-  lateinit var secondLayout: ViewGroup
-  private lateinit var parentFrameLayout: RelativeLayout
-  var parentLayoutResource: Int = R.layout.expandable_layout_parent
-    set(value) {
-      field = value
-      updateExpandableLayout()
-    }
-  var secondLayoutResource: Int = R.layout.expandable_layout_child
-    set(value) {
-      field = value
-      updateExpandableLayout()
-    }
-  var spinnerDrawable: Drawable? = null
-    set(value) {
-      field = value
-      updateExpandableLayout()
-    }
-  var spinnerSize: Float = dp2Px(24)
-    set(value) {
-      field = value
-      updateExpandableLayout()
-    }
-  var spinnerMargin: Float = dp2Px(8)
-    set(value) {
-      field = value
-      updateExpandableLayout()
-    }
-  var showSpinner: Boolean = true
-    set(value) {
-      field = value
-      updateExpandableLayout()
-    }
+    lateinit var parentLayout: ViewGroup
+    lateinit var secondLayout: ViewGroup
 
-  private var secondLayoutHeight: Int = 0
-  var isExpanded: Boolean = false
-  var duration: Long = 250L
-  var spinnerRotation: Int = -180
-  var spinnerAnimate: Boolean = true
-  var onExpandListener: OnExpandListener? = null
+    private lateinit var parentFrameLayout: RelativeLayout
 
-  constructor(context: Context) : super(context)
-
-  constructor(context: Context, attributeSet: AttributeSet) : super(context, attributeSet) {
-    getAttrs(attributeSet)
-  }
-
-  constructor(context: Context, attributeSet: AttributeSet, defStyle: Int) : super(
-    context,
-    attributeSet, defStyle
-  ) {
-    getAttrs(attributeSet, defStyle)
-  }
-
-  private fun getAttrs(attributeSet: AttributeSet) {
-    val typedArray = context.obtainStyledAttributes(attributeSet, R.styleable.ExpandableLayout)
-    try {
-      setTypeArray(typedArray)
-    } finally {
-      typedArray.recycle()
-    }
-  }
-
-  private fun getAttrs(attributeSet: AttributeSet, defStyleAttr: Int) {
-    val typedArray =
-      context.obtainStyledAttributes(
-        attributeSet,
-        R.styleable.ExpandableLayout,
-        defStyleAttr,
-        0
-      )
-    try {
-      setTypeArray(typedArray)
-    } finally {
-      typedArray.recycle()
-    }
-  }
-
-  private fun setTypeArray(a: TypedArray) {
-    this.parentLayoutResource =
-      a.getResourceId(R.styleable.ExpandableLayout_expandable_parentLayout, this.parentLayoutResource)
-    this.secondLayoutResource =
-      a.getResourceId(R.styleable.ExpandableLayout_expandable_secondLayout, this.secondLayoutResource)
-    this.duration =
-      a.getInteger(R.styleable.ExpandableLayout_expandable_duration, this.duration.toInt()).toLong()
-    this.spinnerDrawable = a.getDrawable(R.styleable.ExpandableLayout_expandable_spinner)
-    this.showSpinner =
-      a.getBoolean(R.styleable.ExpandableLayout_expandable_showSpinner, this.showSpinner)
-    this.spinnerAnimate =
-      a.getBoolean(R.styleable.ExpandableLayout_expandable_spinner_animate, this.spinnerAnimate)
-    this.spinnerRotation =
-      a.getInt(R.styleable.ExpandableLayout_expandable_spinner_rotation, this.spinnerRotation)
-    this.spinnerSize =
-      a.getDimension(R.styleable.ExpandableLayout_expandable_spinner_size, this.spinnerSize)
-    this.spinnerMargin =
-      a.getDimension(R.styleable.ExpandableLayout_expandable_spinner_margin, this.spinnerMargin)
-    this.isExpanded =
-      a.getBoolean(R.styleable.ExpandableLayout_expandable_isExpanded, this.isExpanded)
-  }
-
-  override fun onFinishInflate() {
-    super.onFinishInflate()
-    updateExpandableLayout()
-    if (this.isExpanded) {
-      this.isExpanded = !this.isExpanded
-      expand()
-    }
-  }
-
-  private fun updateExpandableLayout() {
-    updateParentLayout()
-    updateSecondLayout()
-    updateSpinner()
-  }
-
-  private fun updateParentLayout() {
-    this.parentFrameLayout = inflate(R.layout.expandable_layout_parent) as RelativeLayout
-    this.parentLayout = inflate(parentLayoutResource)
-    this.parentLayout.measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED)
-    this.parentFrameLayout.cover.addView(this.parentLayout)
-    this.parentFrameLayout.cover.updateLayoutParams { height = parentLayout.measuredHeight }
-    removeView(this.parentFrameLayout)
-    addView(this.parentFrameLayout)
-  }
-
-  private fun updateSecondLayout() {
-    this.secondLayout = inflate(this.secondLayoutResource)
-    with(this.secondLayout) {
-      measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED)
-      secondLayoutHeight = secondLayout.measuredHeight
-      updateLayoutParams { height = 0 }
-      y = parentLayout.measuredHeight.toFloat()
-    }
-    removeView(this.secondLayout)
-    addView(this.secondLayout)
-  }
-
-  private fun updateSpinner() {
-    with(this.parentFrameLayout.arrow) {
-      if (spinnerDrawable != null) {
-        setImageDrawable(spinnerDrawable)
-      }
-      if (showSpinner) {
-        visible(true)
-      } else {
-        visible(false)
-      }
-
-      if (layoutParams is MarginLayoutParams) {
-        (layoutParams as MarginLayoutParams).setMargins(0, 0, spinnerMargin.toInt(), 0)
-      }
-      layoutParams.width = spinnerSize.toInt()
-      layoutParams.height = spinnerSize.toInt()
-    }
-  }
-
-  /** Expand the second layout with indicator animation. */
-  fun expand() {
-    post {
-      if (!this.isExpanded) {
-        val animator = ValueAnimator.ofFloat(0f, 1f)
-        animator.duration = this.duration
-        animator.addUpdateListener {
-          val value = it.animatedValue as Float
-          this.secondLayout.updateLayoutParams {
-            height = (secondLayoutHeight * value).toInt() + parentLayout.height
-          }
-          if (this.spinnerAnimate) {
-            this.parentFrameLayout.arrow.rotation = this.spinnerRotation * value
-          }
+    var parentLayoutResource: Int = R.layout.expandable_layout_parent
+        set(value) {
+            field = value
+            updateExpandableLayout()
         }
-        this.isExpanded = true
-        this.onExpandListener?.onExpand(this.isExpanded)
-        animator.start()
-      }
-    }
-  }
-
-  /** Collapse the second layout with indicator animation. */
-  fun collapse() {
-    post {
-      if (this.isExpanded) {
-        val animator = ValueAnimator.ofFloat(1f, 0f)
-        animator.duration = this.duration
-        animator.addUpdateListener {
-          val value = it.animatedValue as Float
-          this.secondLayout.updateLayoutParams {
-            height =
-              ((height - parentLayout.height) * value).toInt() + parentLayout.height
-          }
-          if (this.spinnerAnimate) {
-            this.parentFrameLayout.arrow.rotation = this.spinnerRotation * value
-          }
+    var secondLayoutResource: Int = R.layout.expandable_layout_child
+        set(value) {
+            field = value
+            updateExpandableLayout()
         }
-        this.isExpanded = false
-        this.onExpandListener?.onExpand(this.isExpanded)
-        animator.start()
-      }
-    }
-  }
-
-  /** Sets the [OnExpandListener] using a lambda. */
-  fun setOnExpandListener(block: (Boolean) -> Unit) {
-    this.onExpandListener = object : OnExpandListener {
-      override fun onExpand(isExpanded: Boolean) {
-        block(isExpanded)
-      }
-    }
-  }
-
-  private fun inflate(resource: Int): ViewGroup {
-    val inflater: LayoutInflater =
-      context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-    val view = inflater.inflate(resource, this, false)
-    if (view is ViewGroup) {
-      return view
-    } else {
-      throw IllegalArgumentException("the layout resource should be wrapped a ViewGroup.")
-    }
-  }
-
-  /** Builder class for creating [ExpandableLayout]. */
-  @ExpandableLayoutDsl
-  class Builder(context: Context) {
-    private val expandableLayout = ExpandableLayout(context)
-
-    fun setParentLayoutResource(value: Int) = apply { this.expandableLayout.parentLayoutResource = value }
-    fun setSecondLayoutResource(value: Int) = apply { this.expandableLayout.secondLayoutResource = value }
-    fun setSpinnerDrawable(value: Drawable) = apply { this.expandableLayout.spinnerDrawable = value }
-    fun setShowSpinner(value: Boolean) = apply { this.expandableLayout.showSpinner = value }
-    fun setSpinnerRotation(value: Int) = apply { this.expandableLayout.spinnerRotation = value }
-    fun setSpinnerAnimate(value: Boolean) = apply { this.expandableLayout.spinnerAnimate = value }
-    fun setSpinnerSize(value: Float) = apply { this.expandableLayout.spinnerSize = value }
-    fun setSpinnerMargin(value: Float) = apply { this.expandableLayout.spinnerMargin = value }
-    fun setDuration(value: Long) = apply { this.expandableLayout.duration = value }
-    fun setOnExpandListener(value: OnExpandListener) = apply { this.expandableLayout.onExpandListener = value }
-    fun setOnExpandListener(block: (Boolean) -> Unit) = apply {
-      this.expandableLayout.onExpandListener = object : OnExpandListener {
-        override fun onExpand(isExpanded: Boolean) {
-          block(isExpanded)
+    var spinnerDrawable: Drawable? = null
+        set(value) {
+            field = value
+            updateExpandableLayout()
         }
-      }
+    var spinnerSize: Float = dp2Px(24)
+        set(value) {
+            field = value
+            updateExpandableLayout()
+        }
+    var spinnerMargin: Float = dp2Px(8)
+        set(value) {
+            field = value
+            updateExpandableLayout()
+        }
+    var showSpinner: Boolean = true
+        set(value) {
+            field = value
+            updateExpandableLayout()
+        }
+
+    private var secondLayoutHeight: Int = 0
+    var isExpanded: Boolean = false
+    var duration: Long = 250L
+    var spinnerRotation: Int = -180
+    var spinnerAnimate: Boolean = true
+    var onExpandListener: OnExpandListener? = null
+
+    constructor(context: Context) : super(context)
+
+    constructor(context: Context, attributeSet: AttributeSet) : super(context, attributeSet) {
+        getAttrs(attributeSet)
     }
 
-    fun build() = this.expandableLayout
-  }
+    constructor(context: Context, attributeSet: AttributeSet, defStyle: Int) : super(
+        context,
+        attributeSet, defStyle
+    ) {
+        getAttrs(attributeSet, defStyle)
+    }
+
+    private fun getAttrs(attributeSet: AttributeSet) {
+        val typedArray = context.obtainStyledAttributes(attributeSet, R.styleable.ExpandableLayout)
+        try {
+            setTypeArray(typedArray)
+        } finally {
+            typedArray.recycle()
+        }
+    }
+
+    private fun getAttrs(attributeSet: AttributeSet, defStyleAttr: Int) {
+        val typedArray =
+            context.obtainStyledAttributes(
+                attributeSet,
+                R.styleable.ExpandableLayout,
+                defStyleAttr,
+                0
+            )
+        try {
+            setTypeArray(typedArray)
+        } finally {
+            typedArray.recycle()
+        }
+    }
+
+    private fun setTypeArray(typedArray: TypedArray) =
+        with(typedArray) {
+            parentLayoutResource =
+                getResourceId(
+                    R.styleable.ExpandableLayout_expandable_parentLayout, parentLayoutResource
+                )
+            secondLayoutResource =
+                getResourceId(
+                    R.styleable.ExpandableLayout_expandable_secondLayout, secondLayoutResource
+                )
+            duration =
+                getInteger(R.styleable.ExpandableLayout_expandable_duration, duration.toInt())
+                    .toLong()
+            spinnerDrawable = getDrawable(R.styleable.ExpandableLayout_expandable_spinner)
+            showSpinner =
+                getBoolean(R.styleable.ExpandableLayout_expandable_showSpinner, showSpinner)
+            spinnerAnimate =
+                getBoolean(
+                    R.styleable.ExpandableLayout_expandable_spinner_animate, spinnerAnimate
+                )
+            spinnerRotation =
+                getInt(R.styleable.ExpandableLayout_expandable_spinner_rotation, spinnerRotation)
+            spinnerSize =
+                getDimension(R.styleable.ExpandableLayout_expandable_spinner_size, spinnerSize)
+            spinnerMargin =
+                getDimension(
+                    R.styleable.ExpandableLayout_expandable_spinner_margin, spinnerMargin
+                )
+            isExpanded =
+                getBoolean(R.styleable.ExpandableLayout_expandable_isExpanded, isExpanded)
+        }
+
+    override fun onFinishInflate() {
+        super.onFinishInflate()
+        updateExpandableLayout()
+        if (isExpanded) {
+            isExpanded = !isExpanded
+            expand()
+        }
+    }
+
+    private fun updateExpandableLayout() {
+        updateParentLayout()
+        updateSecondLayout()
+        updateSpinner()
+    }
+
+    private fun updateParentLayout() {
+        parentFrameLayout = inflate(R.layout.expandable_layout_parent) as RelativeLayout
+        parentLayout = inflate(parentLayoutResource)
+
+        parentLayout.measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED)
+        parentFrameLayout.cover.apply {
+            addView(parentLayout)
+            updateLayoutParams { height = parentLayout.measuredHeight }
+        }
+
+        with(parentFrameLayout) {
+            removeView(this)
+            addView(this)
+        }
+    }
+
+    private fun updateSecondLayout() {
+        secondLayout = inflate(secondLayoutResource)
+
+        secondLayout.apply {
+            measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED)
+            secondLayoutHeight = secondLayout.measuredHeight
+            updateLayoutParams { height = 0 }
+            y = parentLayout.measuredHeight.toFloat()
+        }
+
+        with(secondLayout) {
+            removeView(this)
+            addView(this)
+        }
+    }
+
+    private fun updateSpinner() {
+        parentFrameLayout.arrow.apply {
+            if (spinnerDrawable != null) {
+                setImageDrawable(spinnerDrawable)
+            }
+            visible(showSpinner)
+
+            if (layoutParams is MarginLayoutParams) {
+                (layoutParams as MarginLayoutParams).setMargins(0, 0, spinnerMargin.toInt(), 0)
+            }
+
+            layoutParams.width = spinnerSize.toInt()
+            layoutParams.height = spinnerSize.toInt()
+        }
+    }
+
+    /** Expand the second layout with indicator animation. */
+    fun expand() {
+        post {
+            if (!isExpanded) {
+                val animator = ValueAnimator.ofFloat(0f, 1f)
+                animator.duration = duration
+                animator.addUpdateListener {
+                    val value = it.animatedValue as Float
+                    secondLayout.updateLayoutParams {
+                        height = (secondLayoutHeight * value).toInt() + parentLayout.height
+                    }
+                    if (spinnerAnimate) {
+                        parentFrameLayout.arrow.rotation = spinnerRotation * value
+                    }
+                }
+                isExpanded = true
+                onExpandListener?.onExpand(isExpanded)
+                animator.start()
+            }
+        }
+    }
+
+    /** Collapse the second layout with indicator animation. */
+    fun collapse() {
+        post {
+            if (isExpanded) {
+                val animator = ValueAnimator.ofFloat(1f, 0f)
+                animator.duration = duration
+                animator.addUpdateListener {
+                    val value = it.animatedValue as Float
+                    secondLayout.updateLayoutParams {
+                        height =
+                            ((height - parentLayout.height) * value).toInt() + parentLayout.height
+                    }
+                    if (spinnerAnimate) {
+                        parentFrameLayout.arrow.rotation = spinnerRotation * value
+                    }
+                }
+                isExpanded = false
+                onExpandListener?.onExpand(isExpanded)
+                animator.start()
+            }
+        }
+    }
+
+    /** Sets the [OnExpandListener] using a lambda. */
+    fun setOnExpandListener(block: (Boolean) -> Unit) {
+        onExpandListener = object : OnExpandListener {
+            override fun onExpand(isExpanded: Boolean) {
+                block(isExpanded)
+            }
+        }
+    }
+
+    private fun inflate(resource: Int): ViewGroup {
+        val inflater: LayoutInflater =
+            context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+        val view = inflater.inflate(resource, this, false)
+        if (view is ViewGroup) {
+            return view
+        } else {
+            throw IllegalArgumentException("the layout resource should be wrapped a ViewGroup.")
+        }
+    }
+
+    /** Builder class for creating [ExpandableLayout]. */
+    @ExpandableLayoutDsl
+    class Builder(context: Context) {
+        private val expandableLayout = ExpandableLayout(context)
+
+        fun setParentLayoutResource(value: Int) =
+            apply { expandableLayout.parentLayoutResource = value }
+
+        fun setSecondLayoutResource(value: Int) =
+            apply { expandableLayout.secondLayoutResource = value }
+
+        fun setSpinnerDrawable(value: Drawable) =
+            apply { expandableLayout.spinnerDrawable = value }
+
+        fun setShowSpinner(value: Boolean) = apply { expandableLayout.showSpinner = value }
+        fun setSpinnerRotation(value: Int) = apply { expandableLayout.spinnerRotation = value }
+        fun setSpinnerAnimate(value: Boolean) =
+            apply { expandableLayout.spinnerAnimate = value }
+
+        fun setSpinnerSize(value: Float) = apply { expandableLayout.spinnerSize = value }
+        fun setSpinnerMargin(value: Float) = apply { expandableLayout.spinnerMargin = value }
+        fun setDuration(value: Long) = apply { expandableLayout.duration = value }
+        fun setOnExpandListener(value: OnExpandListener) =
+            apply { expandableLayout.onExpandListener = value }
+
+        fun setOnExpandListener(block: (Boolean) -> Unit) = apply {
+            expandableLayout.onExpandListener = object : OnExpandListener {
+                override fun onExpand(isExpanded: Boolean) {
+                    block(isExpanded)
+                }
+            }
+        }
+
+        fun build() = expandableLayout
+    }
 }
