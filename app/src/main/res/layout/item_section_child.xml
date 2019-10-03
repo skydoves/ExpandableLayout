@@ -10,7 +10,7 @@
   <androidx.recyclerview.widget.RecyclerView
     android:id="@+id/recyclerViewChild"
     android:layout_width="match_parent"
-    android:layout_height="184dp"
+    android:layout_height="wrap_content"
     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
     tools:itemCount="4"
     tools:listitem="@layout/item_row" />

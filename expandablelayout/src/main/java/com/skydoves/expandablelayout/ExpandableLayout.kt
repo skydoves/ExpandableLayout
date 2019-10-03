@@ -22,6 +22,7 @@ import android.content.res.TypedArray
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.RelativeLayout
@@ -65,7 +66,7 @@ class ExpandableLayout : FrameLayout {
       updateExpandableLayout()
     }
 
-  private var secondLayoutHeight: Int = 0
+  var secondLayoutHeight: Int = 0
   var isExpanded: Boolean = false
   var duration: Long = 250L
   var spinnerRotation: Int = -180
@@ -159,13 +160,12 @@ class ExpandableLayout : FrameLayout {
   private fun updateSecondLayout() {
     this.secondLayout = inflate(this.secondLayoutResource)
     with(this.secondLayout) {
-      measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED)
-      secondLayoutHeight = secondLayout.measuredHeight
       updateLayoutParams { height = 0 }
       y = parentLayout.measuredHeight.toFloat()
     }
     removeView(this.secondLayout)
     addView(this.secondLayout)
+    setMeasureHeight(secondLayout)
   }
 
   private fun updateSpinner() {
@@ -185,6 +185,43 @@ class ExpandableLayout : FrameLayout {
       layoutParams.width = spinnerSize.toInt()
       layoutParams.height = spinnerSize.toInt()
     }
+  }
+
+  private fun setMeasureHeight(parent: ViewGroup): Int {
+    parent.measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED)
+    var height = parent.height
+    height += getTopBottomPaddingSize(parent)
+    height += getTopBottomMarginSize(parent)
+    for (i in 0 until parent.childCount) {
+      val child = parent.getChildAt(i)
+      child.post {
+        child.measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED)
+        height += when (child) {
+          is ExpandableLayout -> child.height + child.secondLayoutHeight
+          is ViewGroup -> setMeasureHeight(child)
+          else -> child.measuredHeight
+        }
+        height += getTopBottomPaddingSize(child)
+        height += getTopBottomMarginSize(child)
+        if (height > this.secondLayoutHeight) {
+          this.secondLayoutHeight = height
+        }
+      }
+    }
+    return height
+  }
+
+  private fun getTopBottomPaddingSize(view: View): Int {
+    return view.paddingTop + view.paddingBottom
+  }
+
+  private fun getTopBottomMarginSize(view: View): Int {
+    var margin = 0
+    if (view.layoutParams is MarginLayoutParams) {
+      val marginLayoutParams = (view.layoutParams as MarginLayoutParams)
+      margin += marginLayoutParams.topMargin + marginLayoutParams.bottomMargin
+    }
+    return margin
   }
 
   /** Expand the second layout with indicator animation. */
