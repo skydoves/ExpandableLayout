@@ -142,6 +142,7 @@ class ExpandableLayout : FrameLayout {
   }
 
   private fun updateExpandableLayout() {
+    removeAllViews()
     updateParentLayout()
     updateSecondLayout()
     updateSpinner()
@@ -153,7 +154,6 @@ class ExpandableLayout : FrameLayout {
     this.parentLayout.measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED)
     this.parentFrameLayout.cover.addView(this.parentLayout)
     this.parentFrameLayout.cover.updateLayoutParams { height = parentLayout.measuredHeight }
-    removeView(this.parentFrameLayout)
     addView(this.parentFrameLayout)
   }
 
@@ -163,7 +163,6 @@ class ExpandableLayout : FrameLayout {
       updateLayoutParams { height = 0 }
       y = parentLayout.measuredHeight.toFloat()
     }
-    removeView(this.secondLayout)
     addView(this.secondLayout)
     setMeasureHeight(secondLayout)
   }
