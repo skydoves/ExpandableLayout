@@ -16,7 +16,7 @@
 
 package com.skydoves.expandablelayout
 
-/** Interface definition for a callback to be invoked when a balloon view is clicked. */
+/** Interface definition for a callback to be invoked when a [ExpandableLayout] is expanded or collapsed. */
 interface OnExpandListener {
   /** Invoked when the [ExpandableLayout] is expanded or collapsed. */
   fun onExpand(isExpanded: Boolean)
