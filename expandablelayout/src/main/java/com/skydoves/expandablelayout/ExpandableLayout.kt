@@ -69,6 +69,7 @@ class ExpandableLayout : FrameLayout {
   var secondLayoutHeight: Int = 0
   var isExpanded: Boolean = false
   var duration: Long = 250L
+  var expandableAnimation: ExpandableAnimation = ExpandableAnimation.NORMAL
   var spinnerRotation: Int = -180
   var spinnerAnimate: Boolean = true
   var onExpandListener: OnExpandListener? = null
@@ -117,6 +118,13 @@ class ExpandableLayout : FrameLayout {
       a.getResourceId(R.styleable.ExpandableLayout_expandable_secondLayout, this.secondLayoutResource)
     this.duration =
       a.getInteger(R.styleable.ExpandableLayout_expandable_duration, this.duration.toInt()).toLong()
+    val animation =
+      a.getInteger(R.styleable.ExpandableLayout_expandable_animation, this.expandableAnimation.value)
+    when (animation) {
+      ExpandableAnimation.NORMAL.value -> expandableAnimation = ExpandableAnimation.NORMAL
+      ExpandableAnimation.ACCELERATE.value -> expandableAnimation = ExpandableAnimation.ACCELERATE
+      ExpandableAnimation.BOUNCE.value -> expandableAnimation = ExpandableAnimation.BOUNCE
+    }
     this.spinnerDrawable = a.getDrawable(R.styleable.ExpandableLayout_expandable_spinner)
     this.showSpinner =
       a.getBoolean(R.styleable.ExpandableLayout_expandable_showSpinner, this.showSpinner)
@@ -150,7 +158,7 @@ class ExpandableLayout : FrameLayout {
 
   private fun updateParentLayout() {
     this.parentFrameLayout = inflate(R.layout.expandable_layout_parent) as RelativeLayout
-    this.parentLayout = inflate(parentLayoutResource)
+    this.parentLayout = inflate(this.parentLayoutResource)
     this.parentLayout.measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED)
     this.parentFrameLayout.cover.addView(this.parentLayout)
     this.parentFrameLayout.cover.updateLayoutParams { height = parentLayout.measuredHeight }
@@ -224,23 +232,29 @@ class ExpandableLayout : FrameLayout {
   }
 
   /** Expand the second layout with indicator animation. */
-  fun expand() {
+  fun expand(expandableHeight: Int = 0) {
     post {
       if (!this.isExpanded) {
-        val animator = ValueAnimator.ofFloat(0f, 1f)
-        animator.duration = this.duration
-        animator.addUpdateListener {
-          val value = it.animatedValue as Float
-          this.secondLayout.updateLayoutParams {
-            height = (secondLayoutHeight * value).toInt() + parentLayout.height
+        ValueAnimator.ofFloat(0f, 1f).apply {
+          duration = this@ExpandableLayout.duration
+          applyInterpolator(expandableAnimation)
+          addUpdateListener {
+            val value = it.animatedValue as Float
+            secondLayout.updateLayoutParams {
+              height = if (expandableHeight != 0) {
+                (expandableHeight * value).toInt() + parentLayout.height
+              } else {
+                (secondLayoutHeight * value).toInt() + parentLayout.height
+              }
+            }
+            if (spinnerAnimate) {
+              parentFrameLayout.arrow.rotation = spinnerRotation * value
+            }
           }
-          if (this.spinnerAnimate) {
-            this.parentFrameLayout.arrow.rotation = this.spinnerRotation * value
-          }
+          isExpanded = true
+          onExpandListener?.onExpand(isExpanded)
+          start()
         }
-        this.isExpanded = true
-        this.onExpandListener?.onExpand(this.isExpanded)
-        animator.start()
       }
     }
   }
@@ -249,21 +263,23 @@ class ExpandableLayout : FrameLayout {
   fun collapse() {
     post {
       if (this.isExpanded) {
-        val animator = ValueAnimator.ofFloat(1f, 0f)
-        animator.duration = this.duration
-        animator.addUpdateListener {
-          val value = it.animatedValue as Float
-          this.secondLayout.updateLayoutParams {
-            height =
-              ((height - parentLayout.height) * value).toInt() + parentLayout.height
+        ValueAnimator.ofFloat(1f, 0f).apply {
+          duration = this@ExpandableLayout.duration
+          applyInterpolator(expandableAnimation)
+          addUpdateListener {
+            val value = it.animatedValue as Float
+            secondLayout.updateLayoutParams {
+              height =
+                ((height - parentLayout.height) * value).toInt() + parentLayout.height
+            }
+            if (spinnerAnimate) {
+              parentFrameLayout.arrow.rotation = spinnerRotation * value
+            }
           }
-          if (this.spinnerAnimate) {
-            this.parentFrameLayout.arrow.rotation = this.spinnerRotation * value
-          }
+          isExpanded = false
+          onExpandListener?.onExpand(isExpanded)
+          start()
         }
-        this.isExpanded = false
-        this.onExpandListener?.onExpand(this.isExpanded)
-        animator.start()
       }
     }
   }
@@ -302,6 +318,7 @@ class ExpandableLayout : FrameLayout {
     fun setSpinnerSize(value: Float) = apply { this.expandableLayout.spinnerSize = value }
     fun setSpinnerMargin(value: Float) = apply { this.expandableLayout.spinnerMargin = value }
     fun setDuration(value: Long) = apply { this.expandableLayout.duration = value }
+    fun setExpandableAnimation(value: ExpandableAnimation) = apply { this.expandableLayout.expandableAnimation = value }
     fun setOnExpandListener(value: OnExpandListener) = apply { this.expandableLayout.onExpandListener = value }
     fun setOnExpandListener(block: (Boolean) -> Unit) = apply {
       this.expandableLayout.onExpandListener = object : OnExpandListener {
