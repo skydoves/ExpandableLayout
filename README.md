@@ -13,7 +13,7 @@
 </p>
 
 <p align="center">
-<img src="https://user-images.githubusercontent.com/24237865/65829414-49c96d80-e2e0-11e9-8e92-45e1432dc26a.gif" width="32%"/>
+<img src="https://user-images.githubusercontent.com/24237865/67871177-4b05e880-fb73-11e9-8de8-965a9e67aa1e.gif" width="32%"/>
 <img src="https://user-images.githubusercontent.com/24237865/65830792-bd25ac00-e2ed-11e9-8ce5-890db409ea05.gif" width="32%"/>
 </p>
 
@@ -32,7 +32,7 @@ allprojects {
 And add a dependency code to your **module**'s `build.gradle` file.
 ```gradle
 dependencies {
-    implementation "com.github.skydoves:expandablelayout:1.0.1"
+    implementation "com.github.skydoves:expandablelayout:1.0.2"
 }
 ```
 
@@ -124,6 +124,18 @@ expandable.setOnExpandListener {
   }
 }
 ```
+
+### ExpandableAnimation
+We can customize the expanding and collapsing animation.<br>
+```kotlin
+ExpandableAnimation.NORMAL
+ExpandableAnimation.ACCELERATE
+ExpandableAnimation.BOUNCE
+```
+
+NORMAL | ACCELERATE | BOUNCE
+| :---------------: | :---------------: | :---------------: |
+| <img src="https://user-images.githubusercontent.com/24237865/67871179-4b9e7f00-fb73-11e9-8ffe-563d64b876b4.gif" align="center" width="100%"/> | <img src="https://user-images.githubusercontent.com/24237865/67871176-4a6d5200-fb73-11e9-8d25-26c616ca7b9d.gif" align="center" width="100%"/> | <img src="https://user-images.githubusercontent.com/24237865/67871178-4b9e7f00-fb73-11e9-9f93-fef72b2d627d.gif" align="center" width="100%"/>
 
 ## ExpandableLayout Attributes
 Attributes | Type | Default | Description
