@@ -231,6 +231,12 @@ class ExpandableLayout : FrameLayout {
     return margin
   }
 
+  /**
+   * This function is for supporting Java language.
+   * Expand the second layout with indicator animation.
+   */
+  fun expand() = expand(0)
+
   /** Expand the second layout with indicator animation. */
   fun expand(expandableHeight: Int = 0) {
     post {
