@@ -21,5 +21,6 @@ package com.skydoves.expandablelayout
 enum class ExpandableAnimation(val value: Int) {
   NORMAL(0),
   ACCELERATE(1),
-  BOUNCE(2)
+  BOUNCE(2),
+  OVERSHOOT(3)
 }

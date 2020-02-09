@@ -20,11 +20,13 @@ import android.animation.Animator
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.BounceInterpolator
 import android.view.animation.LinearInterpolator
+import android.view.animation.OvershootInterpolator
 
 internal fun Animator.applyInterpolator(liftAnimation: ExpandableAnimation) {
   when (liftAnimation) {
     ExpandableAnimation.NORMAL -> this.interpolator = LinearInterpolator()
     ExpandableAnimation.ACCELERATE -> this.interpolator = AccelerateInterpolator()
     ExpandableAnimation.BOUNCE -> this.interpolator = BounceInterpolator()
+    ExpandableAnimation.OVERSHOOT -> this.interpolator = OvershootInterpolator()
   }
 }
