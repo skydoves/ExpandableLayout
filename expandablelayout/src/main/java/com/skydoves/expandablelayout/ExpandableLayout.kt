@@ -28,6 +28,7 @@ import android.widget.FrameLayout
 import android.widget.RelativeLayout
 import androidx.annotation.LayoutRes
 import androidx.annotation.Px
+import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.expandable_layout_parent.view.arrow
 import kotlinx.android.synthetic.main.expandable_layout_parent.view.cover
 
@@ -211,8 +212,8 @@ class ExpandableLayout : FrameLayout {
         child.measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED)
         height += when (child) {
           is ExpandableLayout -> child.height + child.secondLayoutHeight
-          is ViewGroup -> if (child.childCount > 1) setMeasureHeight(
-            child) else child.measuredHeight
+          is RecyclerView -> child.measuredHeight
+          is ViewGroup -> setMeasureHeight(child)
           else -> child.measuredHeight
         }
         height += getTopBottomPaddingSize(child)

@@ -29,7 +29,7 @@ class CustomActivity : AppCompatActivity() {
     setContentView(R.layout.activity_custom)
 
     recyclerView.adapter = adapter
-    adapter.addSectionItem(SectionItem("Title0", R.color.colorPrimary, arrayListOf("item0")))
+    adapter.addSectionItem(SectionItem("Title0", R.color.colorPrimary, arrayListOf("item0", "item1", "item2", "item3")))
     adapter.addSectionItem(SectionItem("Title1", R.color.md_yellow_100, arrayListOf("item0", "item1", "item2", "item3")))
     adapter.addSectionItem(SectionItem("Title2", R.color.md_amber_700, arrayListOf("item0", "item1", "item2", "item3")))
     adapter.addSectionItem(SectionItem("Title3", R.color.md_orange_200, arrayListOf("item0", "item1", "item2", "item3")))
