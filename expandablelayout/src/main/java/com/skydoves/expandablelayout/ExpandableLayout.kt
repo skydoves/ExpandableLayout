@@ -205,7 +205,7 @@ class ExpandableLayout : FrameLayout {
         child.measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED)
         height += when (child) {
           is ExpandableLayout -> child.height + child.secondLayoutHeight
-          is ViewGroup -> setMeasureHeight(child)
+          is ViewGroup -> if (child.childCount > 1) setMeasureHeight(child) else child.measuredHeight
           else -> child.measuredHeight
         }
         height += getTopBottomPaddingSize(child)
