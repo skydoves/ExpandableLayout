@@ -11,6 +11,7 @@
     <attr name="expandable_spinner_rotation" format="integer" />
     <attr name="expandable_spinner_size" format="dimension" />
     <attr name="expandable_spinner_margin" format="dimension" />
+    <attr name="expandable_spinner_color" format="color" />
     <attr name="expandable_animation" format="enum">
       <enum name="normal" value="0" />
       <enum name="accelerate" value="1" />

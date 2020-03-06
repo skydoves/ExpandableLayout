@@ -36,5 +36,6 @@
     app:expandable_duration="200"
     app:expandable_isExpanded="false"
     app:expandable_parentLayout="@layout/layout_parent2"
-    app:expandable_secondLayout="@layout/layout_second2" />
+    app:expandable_secondLayout="@layout/layout_second2"
+    app:expandable_spinner_color="@color/md_amber_700" />
 </LinearLayout>

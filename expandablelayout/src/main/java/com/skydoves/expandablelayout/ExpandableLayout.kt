@@ -18,7 +18,9 @@ package com.skydoves.expandablelayout
 
 import android.animation.ValueAnimator
 import android.content.Context
+import android.content.res.ColorStateList
 import android.content.res.TypedArray
+import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.LayoutInflater
@@ -26,8 +28,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.RelativeLayout
+import androidx.annotation.ColorInt
 import androidx.annotation.LayoutRes
 import androidx.annotation.Px
+import androidx.core.widget.ImageViewCompat
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.expandable_layout_parent.view.arrow
 import kotlinx.android.synthetic.main.expandable_layout_parent.view.cover
@@ -77,6 +81,7 @@ class ExpandableLayout : FrameLayout {
   var spinnerRotation: Int = -180
   var spinnerAnimate: Boolean = true
   var onExpandListener: OnExpandListener? = null
+  @ColorInt var spinnerColor: Int = Color.WHITE
 
   constructor(context: Context) : super(context)
 
@@ -143,6 +148,8 @@ class ExpandableLayout : FrameLayout {
       a.getDimension(R.styleable.ExpandableLayout_expandable_spinner_size, this.spinnerSize)
     this.spinnerMargin =
       a.getDimension(R.styleable.ExpandableLayout_expandable_spinner_margin, this.spinnerMargin)
+    this.spinnerColor =
+      a.getColor(R.styleable.ExpandableLayout_expandable_spinner_color, this.spinnerColor)
     this.isExpanded =
       a.getBoolean(R.styleable.ExpandableLayout_expandable_isExpanded, this.isExpanded)
   }
@@ -187,6 +194,7 @@ class ExpandableLayout : FrameLayout {
       if (spinnerDrawable != null) {
         setImageDrawable(spinnerDrawable)
       }
+      ImageViewCompat.setImageTintList(this, ColorStateList.valueOf(spinnerColor))
       if (showSpinner) {
         visible(true)
       } else {
