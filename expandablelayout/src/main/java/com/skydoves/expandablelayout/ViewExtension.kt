@@ -18,7 +18,6 @@ package com.skydoves.expandablelayout
 
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
 
 /** makes visible or invisible a View align the value parameter. */
 internal fun View.visible(value: Boolean) {
@@ -35,11 +34,27 @@ internal fun View.dp2Px(dp: Int): Float {
   return dp * scale
 }
 
-/** updates [FrameLayout] params. */
-internal fun ViewGroup.updateLayoutParams(block: ViewGroup.LayoutParams.() -> Unit) {
-  layoutParams?.let {
-    val params: ViewGroup.LayoutParams =
-        (layoutParams as ViewGroup.LayoutParams).apply { block(this) }
-    layoutParams = params
-  }
+/**
+ * Executes [block] with the View's layoutParams and reassigns the layoutParams with the
+ * updated version.
+ *
+ * @see View.getLayoutParams
+ * @see View.setLayoutParams
+ **/
+inline fun View.updateLayoutParams(block: ViewGroup.LayoutParams.() -> Unit) {
+  updateLayoutParams<ViewGroup.LayoutParams>(block)
+}
+
+/**
+ * Executes [block] with a typed version of the View's layoutParams and reassigns the
+ * layoutParams with the updated version.
+ *
+ * @see View.getLayoutParams
+ * @see View.setLayoutParams
+ **/
+@JvmName("updateLayoutParamsTyped")
+inline fun <reified T : ViewGroup.LayoutParams> View.updateLayoutParams(block: T.() -> Unit) {
+  val params = layoutParams as T
+  block(params)
+  layoutParams = params
 }

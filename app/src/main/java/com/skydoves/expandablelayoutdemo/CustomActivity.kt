@@ -22,7 +22,7 @@ import kotlinx.android.synthetic.main.activity_custom.*
 
 class CustomActivity : AppCompatActivity() {
 
-  private val adapter by lazy { ParentAdapter() }
+  private val adapter = ParentAdapter()
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)

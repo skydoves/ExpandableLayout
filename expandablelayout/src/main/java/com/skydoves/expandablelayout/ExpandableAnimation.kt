@@ -16,8 +16,11 @@
 
 package com.skydoves.expandablelayout
 
-/** Interface definition for a callback to be invoked when a [ExpandableLayout] is expanded or collapsed. */
-interface OnExpandListener {
-  /** Invoked when the [ExpandableLayout] is expanded or collapsed. */
-  fun onExpand(isExpanded: Boolean)
+/** ExpandableAnimation is an animation attribute of the expanding and collapsing. */
+@Suppress("unused")
+enum class ExpandableAnimation(val value: Int) {
+  NORMAL(0),
+  ACCELERATE(1),
+  BOUNCE(2),
+  OVERSHOOT(3)
 }

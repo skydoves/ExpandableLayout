@@ -58,7 +58,7 @@ class MainActivity : AppCompatActivity() {
       if (expandable1.isExpanded) {
         expandable1.collapse()
       } else {
-        expandable1.expand()
+        expandable1.expand(370)
       }
     }
     expandable1.secondLayout.setOnClickListener { toast("clicked the second layout") }
