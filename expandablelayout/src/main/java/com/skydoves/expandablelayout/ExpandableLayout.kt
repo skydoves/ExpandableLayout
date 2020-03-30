@@ -315,6 +315,17 @@ class ExpandableLayout : FrameLayout {
     }
   }
 
+  fun updateSecondLayout(secondLayout: ViewGroup) {
+    removeView(this.secondLayout)
+    this.secondLayout = secondLayout
+    with(this.secondLayout) {
+      updateLayoutParams { height = 0 }
+      y = parentLayout.measuredHeight.toFloat()
+    }
+    addView(this.secondLayout)
+    setMeasureHeight(secondLayout)
+  }
+
   private fun inflate(@LayoutRes resource: Int): ViewGroup {
     val inflater: LayoutInflater =
       context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
