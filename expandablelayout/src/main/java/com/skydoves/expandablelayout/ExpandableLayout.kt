@@ -297,8 +297,7 @@ class ExpandableLayout : FrameLayout {
   private fun inflate(@LayoutRes resource: Int): View {
     val inflater: LayoutInflater =
       context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-    val view = inflater.inflate(resource, this, false)
-    return view
+    return inflater.inflate(resource, this, false)
   }
 
   /** Builder class for creating [ExpandableLayout]. */
