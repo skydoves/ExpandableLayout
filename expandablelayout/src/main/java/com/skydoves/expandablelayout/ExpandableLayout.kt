@@ -24,6 +24,7 @@ import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.RelativeLayout
@@ -37,8 +38,8 @@ import kotlinx.android.synthetic.main.expandable_layout_parent.view.cover
 /** An expandable layout that shows a two-level layout with an indicator. */
 class ExpandableLayout : FrameLayout {
 
-  lateinit var parentLayout: ViewGroup
-  lateinit var secondLayout: ViewGroup
+  lateinit var parentLayout: View
+  lateinit var secondLayout: View
   private lateinit var parentFrameLayout: RelativeLayout
   @LayoutRes var parentLayoutResource: Int = R.layout.expandable_layout_parent
     set(value) {
@@ -125,7 +126,7 @@ class ExpandableLayout : FrameLayout {
       a.getResourceId(R.styleable.ExpandableLayout_expandable_secondLayout,
         this.secondLayoutResource)
     this.duration =
-      a.getInteger(R.styleable.ExpandableLayout_expandable_duration, this.duration.toInt()).toLong()
+      a.getInteger(R.styleable.ExpandableLayout_expandable_duration, duration.toInt()).toLong()
     val animation =
       a.getInteger(R.styleable.ExpandableLayout_expandable_animation,
         this.expandableAnimation.value)
@@ -136,19 +137,19 @@ class ExpandableLayout : FrameLayout {
     }
     this.spinnerDrawable = a.getDrawable(R.styleable.ExpandableLayout_expandable_spinner)
     this.showSpinner =
-      a.getBoolean(R.styleable.ExpandableLayout_expandable_showSpinner, this.showSpinner)
+      a.getBoolean(R.styleable.ExpandableLayout_expandable_showSpinner, showSpinner)
     this.spinnerAnimate =
-      a.getBoolean(R.styleable.ExpandableLayout_expandable_spinner_animate, this.spinnerAnimate)
+      a.getBoolean(R.styleable.ExpandableLayout_expandable_spinner_animate, spinnerAnimate)
     this.spinnerRotation =
-      a.getInt(R.styleable.ExpandableLayout_expandable_spinner_rotation, this.spinnerRotation)
+      a.getInt(R.styleable.ExpandableLayout_expandable_spinner_rotation, spinnerRotation)
     this.spinnerSize =
-      a.getDimension(R.styleable.ExpandableLayout_expandable_spinner_size, this.spinnerSize)
+      a.getDimension(R.styleable.ExpandableLayout_expandable_spinner_size, spinnerSize)
     this.spinnerMargin =
-      a.getDimension(R.styleable.ExpandableLayout_expandable_spinner_margin, this.spinnerMargin)
+      a.getDimension(R.styleable.ExpandableLayout_expandable_spinner_margin, spinnerMargin)
     this.spinnerColor =
-      a.getColor(R.styleable.ExpandableLayout_expandable_spinner_color, this.spinnerColor)
+      a.getColor(R.styleable.ExpandableLayout_expandable_spinner_color, spinnerColor)
     this.isExpanded =
-      a.getBoolean(R.styleable.ExpandableLayout_expandable_isExpanded, this.isExpanded)
+      a.getBoolean(R.styleable.ExpandableLayout_expandable_isExpanded, isExpanded)
   }
 
   override fun onFinishInflate() {
@@ -169,18 +170,20 @@ class ExpandableLayout : FrameLayout {
 
   private fun updateParentLayout() {
     this.parentFrameLayout = inflate(R.layout.expandable_layout_parent) as RelativeLayout
-    this.parentLayout = inflate(this.parentLayoutResource)
+    this.parentLayout = inflate(parentLayoutResource)
     this.parentLayout.measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED)
-    this.parentFrameLayout.cover.addView(this.parentLayout)
+    this.parentFrameLayout.cover.addView(parentLayout)
     this.parentFrameLayout.cover.updateLayoutParams { height = parentLayout.measuredHeight }
-    addView(this.parentFrameLayout)
+    addView(parentFrameLayout)
   }
 
   private fun updateSecondLayout() {
     secondLayout = inflate(secondLayoutResource)
+    secondLayout.visible(false)
     addView(secondLayout)
     secondLayout.post {
-      secondLayoutHeight = setMeasureHeight(secondLayout)
+      secondLayoutHeight = getMeasuredHeight(secondLayout)
+      secondLayout.visible(true)
       with(secondLayout) {
         updateLayoutParams { height = 0 }
         y = parentLayout.measuredHeight.toFloat()
@@ -208,13 +211,15 @@ class ExpandableLayout : FrameLayout {
     }
   }
 
-  private fun setMeasureHeight(parent: ViewGroup): Int {
-    var height = parent.height
-    for (i in 0 until parent.childCount) {
-      val child = parent.getChildAt(i)
-      if (child is ExpandableLayout) {
-        child.post {
-          height += setMeasureHeight(child)
+  private fun getMeasuredHeight(view: View): Int {
+    var height = view.height
+    if (view is ViewGroup) {
+      for (i in 0 until view.childCount) {
+        val child = view.getChildAt(i)
+        if (child is ExpandableLayout) {
+          child.post {
+            height += getMeasuredHeight(child)
+          }
         }
       }
     }
@@ -289,15 +294,11 @@ class ExpandableLayout : FrameLayout {
     }
   }
 
-  private fun inflate(@LayoutRes resource: Int): ViewGroup {
+  private fun inflate(@LayoutRes resource: Int): View {
     val inflater: LayoutInflater =
       context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
     val view = inflater.inflate(resource, this, false)
-    if (view is ViewGroup) {
-      return view
-    } else {
-      throw IllegalArgumentException("the layout resource should be wrapped a ViewGroup.")
-    }
+    return view
   }
 
   /** Builder class for creating [ExpandableLayout]. */
