@@ -1,4 +1,9 @@
-# ExpandableLayout
+<h1 align="center">ExpandableLayout</h1></br>
+
+<p align="center">
+🦚 An expandable layout that shows a two-level layout with an indicator.
+</p>
+<br>
 
 <p align="center">
   <a href="https://opensource.org/licenses/Apache-2.0"><img alt="License" src="https://img.shields.io/badge/License-Apache%202.0-blue.svg"/></a>
@@ -6,10 +11,6 @@
     <a href="https://travis-ci.org/skydoves/ExpandableLayout"><img alt="Travis" src="https://travis-ci.org/skydoves/ExpandableLayout.svg?branch=master"/></a>
     <a href="https://androidweekly.net/issues/issue-382"><img alt="Android Weekly" src="https://img.shields.io/badge/Android%20Weekly-%23382-orange"/></a>
   <a href="https://skydoves.github.io/libraries/expandablelayout/javadoc/expandablelayout/com.skydoves.expandablelayout/index.html"><img alt="Javadoc" src="https://img.shields.io/badge/Javadoc-ExpandableLayout-yellow"/></a>
-</p>
-
-<p align="center">
-🦚 An expandable layout that shows a two-level layout with an indicator.
 </p>
 
 <p align="center">
@@ -32,7 +33,7 @@ allprojects {
 And add a dependency code to your **module**'s `build.gradle` file.
 ```gradle
 dependencies {
-    implementation "com.github.skydoves:expandablelayout:1.0.4"
+    implementation "com.github.skydoves:expandablelayout:1.0.5"
 }
 ```
 
