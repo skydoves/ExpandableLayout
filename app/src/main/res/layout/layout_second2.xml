@@ -17,7 +17,7 @@
     <TextView
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_margin="10dp"
+      android:padding="10dp"
       android:text="@string/text_travel"
       android:textColor="@color/white_93" />
   </androidx.cardview.widget.CardView>

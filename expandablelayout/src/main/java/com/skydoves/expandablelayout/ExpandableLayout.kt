@@ -177,14 +177,14 @@ class ExpandableLayout : FrameLayout {
   }
 
   private fun updateSecondLayout() {
-    this.secondLayout = inflate(this.secondLayoutResource)
-    with(secondLayout) {
-      updateLayoutParams { height = 0 }
-      y = parentLayout.measuredHeight.toFloat()
-    }
+    secondLayout = inflate(secondLayoutResource)
     addView(secondLayout)
     secondLayout.post {
       secondLayoutHeight = setMeasureHeight(secondLayout)
+      with(secondLayout) {
+        updateLayoutParams { height = 0 }
+        y = parentLayout.measuredHeight.toFloat()
+      }
     }
   }
 
@@ -209,12 +209,13 @@ class ExpandableLayout : FrameLayout {
   }
 
   private fun setMeasureHeight(parent: ViewGroup): Int {
-    parent.measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED)
-    var height = parent.measuredHeight
+    var height = parent.height
     for (i in 0 until parent.childCount) {
       val child = parent.getChildAt(i)
       if (child is ExpandableLayout) {
-        height += setMeasureHeight(child)
+        child.post {
+          height += setMeasureHeight(child)
+        }
       }
     }
     return height
