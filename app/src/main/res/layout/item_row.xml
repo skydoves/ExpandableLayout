@@ -5,7 +5,8 @@
   android:layout_height="wrap_content"
   android:background="@color/background800"
   android:foreground="?attr/selectableItemBackground"
-  android:orientation="vertical">
+  android:orientation="vertical"
+  tools:ignore="UnusedAttribute">
 
   <TextView
     android:id="@+id/row_title"

@@ -19,8 +19,13 @@ package com.skydoves.expandablelayoutdemo
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.layout_second.view.*
+import kotlinx.android.synthetic.main.activity_main.expandable
+import kotlinx.android.synthetic.main.activity_main.expandable1
+import kotlinx.android.synthetic.main.activity_main.expandable2
+import kotlinx.android.synthetic.main.layout_second.view.button0
+import kotlinx.android.synthetic.main.layout_second.view.button1
+import kotlinx.android.synthetic.main.layout_second.view.button2
+import kotlinx.android.synthetic.main.layout_second.view.button3
 
 class MainActivity : AppCompatActivity() {
 
@@ -58,7 +63,7 @@ class MainActivity : AppCompatActivity() {
       if (expandable1.isExpanded) {
         expandable1.collapse()
       } else {
-        expandable1.expand(370)
+        expandable1.expand()
       }
     }
     expandable1.secondLayout.setOnClickListener { toast("clicked the second layout") }
