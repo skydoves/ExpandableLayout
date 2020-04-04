@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto"
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
+  android:background="@color/background800"
   android:orientation="vertical">
 
   <androidx.cardview.widget.CardView
@@ -15,9 +16,9 @@
 
     <TextView
       android:layout_width="wrap_content"
-      android:layout_height="match_parent"
-      android:padding="10dp"
-      android:text="Travelocity has some of the best prices on vacation packages guaranteed. Book your flight and hotel together to save money today!"
+      android:layout_height="wrap_content"
+      android:layout_margin="10dp"
+      android:text="@string/text_travel"
       android:textColor="@color/white_93" />
   </androidx.cardview.widget.CardView>
-</RelativeLayout>
+</LinearLayout>

@@ -24,7 +24,6 @@ import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.RelativeLayout
@@ -32,12 +31,10 @@ import androidx.annotation.ColorInt
 import androidx.annotation.LayoutRes
 import androidx.annotation.Px
 import androidx.core.widget.ImageViewCompat
-import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.expandable_layout_parent.view.arrow
 import kotlinx.android.synthetic.main.expandable_layout_parent.view.cover
 
 /** An expandable layout that shows a two-level layout with an indicator. */
-@Suppress("unused")
 class ExpandableLayout : FrameLayout {
 
   lateinit var parentLayout: ViewGroup
@@ -181,12 +178,14 @@ class ExpandableLayout : FrameLayout {
 
   private fun updateSecondLayout() {
     this.secondLayout = inflate(this.secondLayoutResource)
-    with(this.secondLayout) {
+    with(secondLayout) {
       updateLayoutParams { height = 0 }
       y = parentLayout.measuredHeight.toFloat()
     }
-    addView(this.secondLayout)
-    setMeasureHeight(secondLayout)
+    addView(secondLayout)
+    secondLayout.post {
+      secondLayoutHeight = setMeasureHeight(secondLayout)
+    }
   }
 
   private fun updateSpinner() {
@@ -211,40 +210,14 @@ class ExpandableLayout : FrameLayout {
 
   private fun setMeasureHeight(parent: ViewGroup): Int {
     parent.measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED)
-    var height = parent.height
-    height += getTopBottomPaddingSize(parent)
-    height += getTopBottomMarginSize(parent)
+    var height = parent.measuredHeight
     for (i in 0 until parent.childCount) {
       val child = parent.getChildAt(i)
-      child.post {
-        child.measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED)
-        height += when (child) {
-          is ExpandableLayout -> child.height + child.secondLayoutHeight
-          is RecyclerView -> child.measuredHeight
-          is ViewGroup -> setMeasureHeight(child)
-          else -> child.measuredHeight
-        }
-        height += getTopBottomPaddingSize(child)
-        height += getTopBottomMarginSize(child)
-        if (height > this.secondLayoutHeight) {
-          this.secondLayoutHeight = height
-        }
+      if (child is ExpandableLayout) {
+        height += setMeasureHeight(child)
       }
     }
     return height
-  }
-
-  private fun getTopBottomPaddingSize(view: View): Int {
-    return view.paddingTop + view.paddingBottom
-  }
-
-  private fun getTopBottomMarginSize(view: View): Int {
-    var margin = 0
-    if (view.layoutParams is MarginLayoutParams) {
-      val marginLayoutParams = (view.layoutParams as MarginLayoutParams)
-      margin += marginLayoutParams.topMargin + marginLayoutParams.bottomMargin
-    }
-    return margin
   }
 
   /**
@@ -327,6 +300,7 @@ class ExpandableLayout : FrameLayout {
   }
 
   /** Builder class for creating [ExpandableLayout]. */
+  @Suppress("unused")
   @ExpandableLayoutDsl
   class Builder(context: Context) {
     private val expandableLayout = ExpandableLayout(context)
