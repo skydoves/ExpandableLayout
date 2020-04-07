@@ -204,7 +204,7 @@ class ExpandableLayout : FrameLayout {
       }
 
       if (layoutParams is MarginLayoutParams) {
-        (layoutParams as MarginLayoutParams).setMargins(0, 0, spinnerMargin.toInt(), 0)
+        (layoutParams as MarginLayoutParams).rightMargin = spinnerMargin.toInt()
       }
       layoutParams.width = spinnerSize.toInt()
       layoutParams.height = spinnerSize.toInt()
