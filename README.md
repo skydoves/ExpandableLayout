@@ -33,7 +33,7 @@ allprojects {
 And add a dependency code to your **module**'s `build.gradle` file.
 ```gradle
 dependencies {
-    implementation "com.github.skydoves:expandablelayout:1.0.5"
+    implementation "com.github.skydoves:expandablelayout:1.0.6"
 }
 ```
 
@@ -62,6 +62,7 @@ Here is a basic example of implementing `ExpandableLayout`.
   app:expandable_spinner="@drawable/ic_arrow_down" // sets the spinner's drawable.
   app:expandable_spinner_animate="true" // animates the spinner when expanding or collapse.
   app:expandable_spinner_margin="14dp" // sets the margin to the spinner.
+  app:expandable_spinner_gravity="start" // sets the gravity to the spinner.
   app:expandable_spinner_size="32dp" // sets the spinner size.
 />
 ```
@@ -147,10 +148,11 @@ secondLayout | layout | default layout | Sets the second layout.
 duration | Long | 250L | Sets the duration of the spinner animation.
 spinner | Drawable | arrow_down | Sets the spinner's drawable.
 showSpinner | Boolean | true | Shows the spinner or not.
-Spinner_animate | Boolean | true | Animates the spinner when expanding or collapse.
-Spinner_rotation | Integer | -180 | Sets the rotation of the spinner animation.
-Spinner_size | Dimension | 36dp | Sets the size of the spinner.
-Spinner_margin | Dimension | 8dp | Sets the margin of the spinner.
+spinner_animate | Boolean | true | Animates the spinner when expanding or collapse.
+spinner_rotation | Integer | -180 | Sets the rotation of the spinner animation.
+spinner_size | Dimension | 36dp | Sets the size of the spinner.
+spinner_margin | Dimension | 8dp | Sets the margin of the spinner.
+spinner_gravity | SpinnerGravity | end | Sets the gravity of the spinner.
 
 ## Find this library useful? :heart:
 Support it by joining __[stargazers](https://github.com/skydoves/ExpandableLayout/stargazers)__ for this repository. :star:<br>
