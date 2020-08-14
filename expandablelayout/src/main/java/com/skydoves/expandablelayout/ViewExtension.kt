@@ -34,6 +34,12 @@ internal fun View.dp2Px(dp: Int): Float {
   return dp * scale
 }
 
+/** dp size to px size. */
+internal fun View.dp2Px(dp: Float): Float {
+  val scale = resources.displayMetrics.density
+  return dp * scale
+}
+
 /**
  * Executes [block] with the View's layoutParams and reassigns the layoutParams with the
  * updated version.

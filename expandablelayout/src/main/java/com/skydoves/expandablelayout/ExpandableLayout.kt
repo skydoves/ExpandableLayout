@@ -36,86 +36,113 @@ import kotlinx.android.synthetic.main.expandable_layout_parent.view.arrow
 import kotlinx.android.synthetic.main.expandable_layout_parent.view.cover
 
 /** An expandable layout that shows a two-level layout with an indicator. */
-class ExpandableLayout : FrameLayout {
+class ExpandableLayout @JvmOverloads constructor(
+  context: Context,
+  attributeSet: AttributeSet? = null,
+  defStyle: Int = 0
+) : FrameLayout(context, attributeSet, defStyle) {
 
   lateinit var parentLayout: View
   lateinit var secondLayout: View
   private lateinit var parentFrameLayout: RelativeLayout
-  @LayoutRes var parentLayoutResource: Int = R.layout.expandable_layout_parent
-    set(value) {
-      field = value
+
+  private var _isExpanded: Boolean = false
+
+  @LayoutRes
+  private var _parentLayoutResource: Int = R.layout.expandable_layout_parent
+
+  @LayoutRes
+  private var _secondLayoutResource: Int = R.layout.expandable_layout_child
+
+  private var _spinnerDrawable: Drawable? = null
+
+  @Px
+  private var _spinnerMargin: Float = dp2Px(8)
+
+  @Px
+  private var _spinnerSize: Float = dp2Px(10)
+
+  @ColorInt
+  private var _spinnerColor: Int = Color.WHITE
+
+  private var _showSpinner: Boolean = true
+
+  var isExpanded: Boolean
+    get() = _isExpanded
+    private set(value) {
+      _isExpanded = value
+    }
+
+  var parentLayoutResource: Int
+    @LayoutRes get() = _parentLayoutResource
+    set(@LayoutRes value) {
+      _parentLayoutResource = value
       updateExpandableLayout()
     }
-  @LayoutRes var secondLayoutResource: Int = R.layout.expandable_layout_child
-    set(value) {
-      field = value
+
+  var secondLayoutResource: Int
+    @LayoutRes get() = _secondLayoutResource
+    set(@LayoutRes value) {
+      _secondLayoutResource = value
       updateExpandableLayout()
     }
-  var spinnerDrawable: Drawable? = null
+
+  var spinnerDrawable: Drawable?
+    get() = _spinnerDrawable
     set(value) {
-      field = value
-      updateSpinner()
-    }
-  @Px var spinnerSize: Float = dp2Px(24)
-    set(value) {
-      field = value
-      updateSpinner()
-    }
-  @Px var spinnerMargin: Float = dp2Px(8)
-    set(value) {
-      field = value
-      updateSpinner()
-    }
-  @ColorInt var spinnerColor: Int = Color.WHITE
-    set(value) {
-      field = value
-      updateSpinner()
-    }
-  var showSpinner: Boolean = true
-    set(value) {
-      field = value
+      _spinnerDrawable = value
       updateSpinner()
     }
 
-  @Px private var secondLayoutHeight: Int = 0
+  var spinnerSize: Float
+    @Px get() = _spinnerSize
+    set(@Dp value) {
+      _spinnerSize = dp2Px(value)
+      updateSpinner()
+    }
 
-  var isExpanded: Boolean = false
+  var spinnerMargin: Float
+    @Px get() = _spinnerMargin
+    set(@Dp value) {
+      _spinnerMargin = dp2Px(value)
+      updateSpinner()
+    }
+
+  var spinnerColor: Int
+    @ColorInt get() = _spinnerColor
+    set(@ColorInt value) {
+      _spinnerColor = value
+      updateSpinner()
+    }
+
+  var showSpinner: Boolean
+    get() = _showSpinner
+    set(value) {
+      _showSpinner = value
+      updateSpinner()
+    }
+
+  @Px
+  private var secondLayoutHeight: Int = 0
   var duration: Long = 250L
   var expandableAnimation: ExpandableAnimation = ExpandableAnimation.NORMAL
   var spinnerRotation: Int = -180
   var spinnerAnimate: Boolean = true
   var onExpandListener: OnExpandListener? = null
 
-  constructor(context: Context) : super(context)
-
-  constructor(context: Context, attributeSet: AttributeSet) : super(context, attributeSet) {
-    getAttrs(attributeSet)
-  }
-
-  constructor(context: Context, attributeSet: AttributeSet, defStyle: Int) : super(
-    context,
-    attributeSet, defStyle
-  ) {
-    getAttrs(attributeSet, defStyle)
-  }
-
-  private fun getAttrs(attributeSet: AttributeSet) {
-    val typedArray = context.obtainStyledAttributes(attributeSet, R.styleable.ExpandableLayout)
-    try {
-      setTypeArray(typedArray)
-    } finally {
-      typedArray.recycle()
+  init {
+    if (attributeSet != null) {
+      getAttrs(attributeSet, defStyle)
     }
   }
 
-  private fun getAttrs(attributeSet: AttributeSet, defStyleAttr: Int) {
-    val typedArray =
-      context.obtainStyledAttributes(
-        attributeSet,
-        R.styleable.ExpandableLayout,
-        defStyleAttr,
-        0
-      )
+  private fun getAttrs(attributeSet: AttributeSet?, defStyleAttr: Int) {
+    val typedArray = context.obtainStyledAttributes(
+      attributeSet,
+      R.styleable.ExpandableLayout,
+      defStyleAttr,
+      0
+    )
     try {
       setTypeArray(typedArray)
     } finally {
@@ -148,9 +175,11 @@ class ExpandableLayout : FrameLayout {
     this.spinnerRotation =
       a.getInt(R.styleable.ExpandableLayout_expandable_spinner_rotation, spinnerRotation)
     this.spinnerSize =
-      a.getDimension(R.styleable.ExpandableLayout_expandable_spinner_size, spinnerSize)
+      a.getDimensionPixelSize(R.styleable.ExpandableLayout_expandable_spinner_size,
+        spinnerSize.toInt()).toFloat()
     this.spinnerMargin =
-      a.getDimension(R.styleable.ExpandableLayout_expandable_spinner_margin, spinnerMargin)
+      a.getDimensionPixelSize(R.styleable.ExpandableLayout_expandable_spinner_margin,
+        spinnerMargin.toInt()).toFloat()
     this.spinnerColor =
       a.getColor(R.styleable.ExpandableLayout_expandable_spinner_color, spinnerColor)
     this.isExpanded =
