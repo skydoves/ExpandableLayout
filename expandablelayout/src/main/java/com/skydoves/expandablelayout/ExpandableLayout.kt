@@ -54,32 +54,37 @@ class ExpandableLayout : FrameLayout {
   var spinnerDrawable: Drawable? = null
     set(value) {
       field = value
-      updateExpandableLayout()
+      updateSpinner()
     }
   @Px var spinnerSize: Float = dp2Px(24)
     set(value) {
       field = value
-      updateExpandableLayout()
+      updateSpinner()
     }
   @Px var spinnerMargin: Float = dp2Px(8)
     set(value) {
       field = value
-      updateExpandableLayout()
+      updateSpinner()
+    }
+  @ColorInt var spinnerColor: Int = Color.WHITE
+    set(value) {
+      field = value
+      updateSpinner()
     }
   var showSpinner: Boolean = true
     set(value) {
       field = value
-      updateExpandableLayout()
+      updateSpinner()
     }
 
-  @Px var secondLayoutHeight: Int = 0
+  @Px private var secondLayoutHeight: Int = 0
+
   var isExpanded: Boolean = false
   var duration: Long = 250L
   var expandableAnimation: ExpandableAnimation = ExpandableAnimation.NORMAL
   var spinnerRotation: Int = -180
   var spinnerAnimate: Boolean = true
   var onExpandListener: OnExpandListener? = null
-  @ColorInt var spinnerColor: Int = Color.WHITE
 
   constructor(context: Context) : super(context)
 

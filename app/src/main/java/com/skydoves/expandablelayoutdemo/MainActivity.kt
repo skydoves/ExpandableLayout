@@ -16,6 +16,7 @@
 
 package com.skydoves.expandablelayoutdemo
 
+import android.graphics.Color
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -36,6 +37,7 @@ class MainActivity : AppCompatActivity() {
     expandable.setOnExpandListener {
       if (it) {
         toast("expanded")
+        expandable.spinnerColor = Color.YELLOW
       } else {
         toast("collapse")
       }
