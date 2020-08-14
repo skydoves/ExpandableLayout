@@ -41,8 +41,8 @@ internal fun View.dp2Px(dp: Int): Float {
  * @see View.getLayoutParams
  * @see View.setLayoutParams
  **/
-inline fun View.updateLayoutParams(block: ViewGroup.LayoutParams.() -> Unit) {
-  updateLayoutParams<ViewGroup.LayoutParams>(block)
+internal inline fun View.updateLayoutParams(block: ViewGroup.LayoutParams.() -> Unit) {
+  updateLayoutParam(this, block)
 }
 
 /**
@@ -52,9 +52,11 @@ inline fun View.updateLayoutParams(block: ViewGroup.LayoutParams.() -> Unit) {
  * @see View.getLayoutParams
  * @see View.setLayoutParams
  **/
-@JvmName("updateLayoutParamsTyped")
-inline fun <reified T : ViewGroup.LayoutParams> View.updateLayoutParams(block: T.() -> Unit) {
-  val params = layoutParams as T
+private inline fun <reified T : ViewGroup.LayoutParams> updateLayoutParam(
+  view: View,
+  block: T.() -> Unit
+) {
+  val params = view.layoutParams as T
   block(params)
-  layoutParams = params
+  view.layoutParams = params
 }
