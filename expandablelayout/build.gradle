@@ -1,6 +1,5 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
 apply plugin: 'org.jetbrains.dokka-android'
 apply from: '../dependencies.gradle'
 apply from: '../publish.gradle'
@@ -13,6 +12,9 @@ android {
         versionCode versions.versionCode
         versionName versions.versionName
         vectorDrawables.useSupportLibrary = true
+    }
+    viewBinding {
+        enabled = true
     }
 }
 

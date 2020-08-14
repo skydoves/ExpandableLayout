@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("unused")
+
 package com.skydoves.expandablelayout
 
 import android.animation.ValueAnimator
@@ -27,13 +29,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
-import android.widget.RelativeLayout
 import androidx.annotation.ColorInt
 import androidx.annotation.LayoutRes
 import androidx.annotation.Px
 import androidx.core.widget.ImageViewCompat
-import kotlinx.android.synthetic.main.expandable_layout_parent.view.arrow
-import kotlinx.android.synthetic.main.expandable_layout_parent.view.cover
+import com.skydoves.expandablelayout.databinding.ExpandableLayoutParentBinding
 
 /** An expandable layout that shows a two-level layout with an indicator. */
 class ExpandableLayout @JvmOverloads constructor(
@@ -44,7 +44,8 @@ class ExpandableLayout @JvmOverloads constructor(
 
   lateinit var parentLayout: View
   lateinit var secondLayout: View
-  private lateinit var parentFrameLayout: RelativeLayout
+  private val binding: ExpandableLayoutParentBinding =
+    ExpandableLayoutParentBinding.inflate(LayoutInflater.from(context), null, false)
 
   private var _isExpanded: Boolean = false
 
@@ -128,6 +129,8 @@ class ExpandableLayout @JvmOverloads constructor(
   var expandableAnimation: ExpandableAnimation = ExpandableAnimation.NORMAL
   var spinnerRotation: Int = -180
   var spinnerAnimate: Boolean = true
+
+  @JvmField
   var onExpandListener: OnExpandListener? = null
 
   init {
@@ -189,8 +192,8 @@ class ExpandableLayout @JvmOverloads constructor(
   override fun onFinishInflate() {
     super.onFinishInflate()
     updateExpandableLayout()
-    if (this.isExpanded) {
-      this.isExpanded = !this.isExpanded
+    if (isExpanded) {
+      isExpanded = !isExpanded
       expand()
     }
   }
@@ -203,12 +206,11 @@ class ExpandableLayout @JvmOverloads constructor(
   }
 
   private fun updateParentLayout() {
-    this.parentFrameLayout = inflate(R.layout.expandable_layout_parent) as RelativeLayout
     this.parentLayout = inflate(parentLayoutResource)
     this.parentLayout.measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED)
-    this.parentFrameLayout.cover.addView(parentLayout)
-    this.parentFrameLayout.cover.updateLayoutParams { height = parentLayout.measuredHeight }
-    addView(parentFrameLayout)
+    this.binding.cover.addView(parentLayout)
+    this.binding.cover.updateLayoutParams { height = parentLayout.measuredHeight }
+    addView(binding.root)
   }
 
   private fun updateSecondLayout() {
@@ -226,22 +228,18 @@ class ExpandableLayout @JvmOverloads constructor(
   }
 
   private fun updateSpinner() {
-    with(this.parentFrameLayout.arrow) {
-      if (spinnerDrawable != null) {
-        setImageDrawable(spinnerDrawable)
-      }
+    with(binding.arrow) {
+      visible(showSpinner)
+      spinnerDrawable?.let { setImageDrawable(it) }
       ImageViewCompat.setImageTintList(this, ColorStateList.valueOf(spinnerColor))
-      if (showSpinner) {
-        visible(true)
-      } else {
-        visible(false)
+      val params = layoutParams
+      if (params is MarginLayoutParams) {
+        with(params) {
+          rightMargin = spinnerMargin.toInt()
+          width = spinnerSize.toInt()
+          height = spinnerSize.toInt()
+        }
       }
-
-      if (layoutParams is MarginLayoutParams) {
-        (layoutParams as MarginLayoutParams).rightMargin = spinnerMargin.toInt()
-      }
-      layoutParams.width = spinnerSize.toInt()
-      layoutParams.height = spinnerSize.toInt()
     }
   }
 
@@ -269,7 +267,7 @@ class ExpandableLayout @JvmOverloads constructor(
   /** Expand the second layout with indicator animation. */
   fun expand(@Px expandableHeight: Int = 0) {
     post {
-      if (!this.isExpanded) {
+      if (!isExpanded) {
         ValueAnimator.ofFloat(0f, 1f).apply {
           duration = this@ExpandableLayout.duration
           applyInterpolator(expandableAnimation)
@@ -283,7 +281,7 @@ class ExpandableLayout @JvmOverloads constructor(
               }
             }
             if (spinnerAnimate) {
-              parentFrameLayout.arrow.rotation = spinnerRotation * value
+              binding.arrow.rotation = spinnerRotation * value
             }
           }
           isExpanded = true
@@ -297,7 +295,7 @@ class ExpandableLayout @JvmOverloads constructor(
   /** Collapse the second layout with indicator animation. */
   fun collapse() {
     post {
-      if (this.isExpanded) {
+      if (isExpanded) {
         ValueAnimator.ofFloat(1f, 0f).apply {
           duration = this@ExpandableLayout.duration
           applyInterpolator(expandableAnimation)
@@ -308,7 +306,7 @@ class ExpandableLayout @JvmOverloads constructor(
                 ((height - parentLayout.height) * value).toInt() + parentLayout.height
             }
             if (spinnerAnimate) {
-              parentFrameLayout.arrow.rotation = spinnerRotation * value
+              binding.arrow.rotation = spinnerRotation * value
             }
           }
           isExpanded = false
@@ -319,7 +317,12 @@ class ExpandableLayout @JvmOverloads constructor(
     }
   }
 
-  /** Sets the [OnExpandListener] using a lambda. */
+  /** sets an [OnExpandListener] to the [ExpandableLayout]. */
+  fun setOnExpandListener(onExpandListener: OnExpandListener) {
+    this.onExpandListener = onExpandListener
+  }
+
+  /** sets an [OnExpandListener] to the [ExpandableLayout] using a lambda. */
   fun setOnExpandListener(block: (Boolean) -> Unit) {
     this.onExpandListener = object : OnExpandListener {
       override fun onExpand(isExpanded: Boolean) {
@@ -328,14 +331,10 @@ class ExpandableLayout @JvmOverloads constructor(
     }
   }
 
-  private fun inflate(@LayoutRes resource: Int): View {
-    val inflater: LayoutInflater =
-      context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-    return inflater.inflate(resource, this, false)
-  }
+  private fun inflate(@LayoutRes resource: Int) =
+    LayoutInflater.from(context).inflate(resource, this, false)
 
   /** Builder class for creating [ExpandableLayout]. */
-  @Suppress("unused")
   @ExpandableLayoutDsl
   class Builder(context: Context) {
     private val expandableLayout = ExpandableLayout(context)
