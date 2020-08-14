@@ -252,17 +252,11 @@ class ExpandableLayout @JvmOverloads constructor(
       with(layoutParams as LayoutParams) {
         width = spinnerSize.toInt()
         height = spinnerSize.toInt()
-        when (spinnerGravity) {
-          SpinnerGravity.START -> {
-            gravity = Gravity.START
-            leftMargin = spinnerMargin.toInt()
-            rightMargin = 0
-          }
-          SpinnerGravity.END -> {
-            gravity = Gravity.END
-            rightMargin = spinnerMargin.toInt()
-            leftMargin = 0
-          }
+        leftMargin = spinnerMargin.toInt()
+        rightMargin = spinnerMargin.toInt()
+        gravity = when (spinnerGravity) {
+          SpinnerGravity.START -> Gravity.START
+          SpinnerGravity.END -> Gravity.END
         }
       }
     }
