@@ -12,6 +12,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="30dp"
+    app:expandable_spinner_gravity="start"
     app:expandable_animation="bounce"
     app:expandable_duration="300"
     app:expandable_isExpanded="false"

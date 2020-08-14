@@ -25,6 +25,7 @@ import android.content.res.TypedArray
 import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -33,7 +34,7 @@ import androidx.annotation.ColorInt
 import androidx.annotation.LayoutRes
 import androidx.annotation.Px
 import androidx.core.widget.ImageViewCompat
-import com.skydoves.expandablelayout.databinding.ExpandableLayoutParentBinding
+import com.skydoves.expandablelayout.databinding.ExpandableLayoutFrameBinding
 
 /** An expandable layout that shows a two-level layout with an indicator. */
 class ExpandableLayout @JvmOverloads constructor(
@@ -44,13 +45,13 @@ class ExpandableLayout @JvmOverloads constructor(
 
   lateinit var parentLayout: View
   lateinit var secondLayout: View
-  private val binding: ExpandableLayoutParentBinding =
-    ExpandableLayoutParentBinding.inflate(LayoutInflater.from(context), null, false)
+  private val binding: ExpandableLayoutFrameBinding =
+    ExpandableLayoutFrameBinding.inflate(LayoutInflater.from(context), null, false)
 
   private var _isExpanded: Boolean = false
 
   @LayoutRes
-  private var _parentLayoutResource: Int = R.layout.expandable_layout_parent
+  private var _parentLayoutResource: Int = R.layout.expandable_layout_frame
 
   @LayoutRes
   private var _secondLayoutResource: Int = R.layout.expandable_layout_child
@@ -58,13 +59,15 @@ class ExpandableLayout @JvmOverloads constructor(
   private var _spinnerDrawable: Drawable? = null
 
   @Px
-  private var _spinnerMargin: Float = dp2Px(8)
+  private var _spinnerMargin: Float = dp2Px(14)
 
   @Px
-  private var _spinnerSize: Float = dp2Px(10)
+  private var _spinnerSize: Float = dp2Px(12)
 
   @ColorInt
   private var _spinnerColor: Int = Color.WHITE
+
+  private var _spinnerGravity: SpinnerGravity = SpinnerGravity.END
 
   private var _showSpinner: Boolean = true
 
@@ -116,6 +119,13 @@ class ExpandableLayout @JvmOverloads constructor(
       updateSpinner()
     }
 
+  var spinnerGravity: SpinnerGravity
+    get() = _spinnerGravity
+    set(value) {
+      _spinnerGravity = value
+      updateSpinner()
+    }
+
   var showSpinner: Boolean
     get() = _showSpinner
     set(value) {
@@ -154,12 +164,31 @@ class ExpandableLayout @JvmOverloads constructor(
   }
 
   private fun setTypeArray(a: TypedArray) {
-    this.parentLayoutResource =
+    _isExpanded =
+      a.getBoolean(R.styleable.ExpandableLayout_expandable_isExpanded, _isExpanded)
+    _parentLayoutResource =
       a.getResourceId(R.styleable.ExpandableLayout_expandable_parentLayout,
-        this.parentLayoutResource)
-    this.secondLayoutResource =
+        _parentLayoutResource)
+    _secondLayoutResource =
       a.getResourceId(R.styleable.ExpandableLayout_expandable_secondLayout,
-        this.secondLayoutResource)
+        _secondLayoutResource)
+    _spinnerDrawable = a.getDrawable(R.styleable.ExpandableLayout_expandable_spinner)
+    _showSpinner =
+      a.getBoolean(R.styleable.ExpandableLayout_expandable_showSpinner, _showSpinner)
+    _spinnerSize =
+      a.getDimensionPixelSize(R.styleable.ExpandableLayout_expandable_spinner_size,
+        _spinnerSize.toInt()).toFloat()
+    _spinnerMargin =
+      a.getDimensionPixelSize(R.styleable.ExpandableLayout_expandable_spinner_margin,
+        _spinnerMargin.toInt()).toFloat()
+    _spinnerColor =
+      a.getColor(R.styleable.ExpandableLayout_expandable_spinner_color, _spinnerColor)
+    val spinnerGravity = a.getInteger(R.styleable.ExpandableLayout_expandable_spinner_gravity,
+      _spinnerGravity.value)
+    when (spinnerGravity) {
+      SpinnerGravity.START.value -> _spinnerGravity = SpinnerGravity.START
+      SpinnerGravity.END.value -> _spinnerGravity = SpinnerGravity.END
+    }
     this.duration =
       a.getInteger(R.styleable.ExpandableLayout_expandable_duration, duration.toInt()).toLong()
     val animation =
@@ -170,23 +199,10 @@ class ExpandableLayout @JvmOverloads constructor(
       ExpandableAnimation.ACCELERATE.value -> expandableAnimation = ExpandableAnimation.ACCELERATE
       ExpandableAnimation.BOUNCE.value -> expandableAnimation = ExpandableAnimation.BOUNCE
     }
-    this.spinnerDrawable = a.getDrawable(R.styleable.ExpandableLayout_expandable_spinner)
-    this.showSpinner =
-      a.getBoolean(R.styleable.ExpandableLayout_expandable_showSpinner, showSpinner)
     this.spinnerAnimate =
       a.getBoolean(R.styleable.ExpandableLayout_expandable_spinner_animate, spinnerAnimate)
     this.spinnerRotation =
       a.getInt(R.styleable.ExpandableLayout_expandable_spinner_rotation, spinnerRotation)
-    this.spinnerSize =
-      a.getDimensionPixelSize(R.styleable.ExpandableLayout_expandable_spinner_size,
-        spinnerSize.toInt()).toFloat()
-    this.spinnerMargin =
-      a.getDimensionPixelSize(R.styleable.ExpandableLayout_expandable_spinner_margin,
-        spinnerMargin.toInt()).toFloat()
-    this.spinnerColor =
-      a.getColor(R.styleable.ExpandableLayout_expandable_spinner_color, spinnerColor)
-    this.isExpanded =
-      a.getBoolean(R.styleable.ExpandableLayout_expandable_isExpanded, isExpanded)
   }
 
   override fun onFinishInflate() {
@@ -232,12 +248,21 @@ class ExpandableLayout @JvmOverloads constructor(
       visible(showSpinner)
       spinnerDrawable?.let { setImageDrawable(it) }
       ImageViewCompat.setImageTintList(this, ColorStateList.valueOf(spinnerColor))
-      val params = layoutParams
-      if (params is MarginLayoutParams) {
-        with(params) {
-          rightMargin = spinnerMargin.toInt()
-          width = spinnerSize.toInt()
-          height = spinnerSize.toInt()
+      parentLayout.post { y = (parentLayout.height / 2f) - (spinnerSize / 2) }
+      with(layoutParams as LayoutParams) {
+        width = spinnerSize.toInt()
+        height = spinnerSize.toInt()
+        when (spinnerGravity) {
+          SpinnerGravity.START -> {
+            gravity = Gravity.START
+            leftMargin = spinnerMargin.toInt()
+            rightMargin = 0
+          }
+          SpinnerGravity.END -> {
+            gravity = Gravity.END
+            rightMargin = spinnerMargin.toInt()
+            leftMargin = 0
+          }
         }
       }
     }
