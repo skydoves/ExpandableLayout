@@ -5,7 +5,7 @@
     <attr name="expandable_parentLayout" format="reference" />
     <attr name="expandable_secondLayout" format="reference" />
     <attr name="expandable_duration" format="integer" />
-    <attr name="expandable_spinner" format="reference" />
+    <attr name="expandable_spinner" format="integer" />
     <attr name="expandable_showSpinner" format="boolean" />
     <attr name="expandable_spinner_animate" format="boolean" />
     <attr name="expandable_spinner_rotation" format="integer" />

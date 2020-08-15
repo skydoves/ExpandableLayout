@@ -33,6 +33,7 @@ import android.widget.FrameLayout
 import androidx.annotation.ColorInt
 import androidx.annotation.LayoutRes
 import androidx.annotation.Px
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.widget.ImageViewCompat
 import com.skydoves.expandablelayout.databinding.ExpandableLayoutFrameBinding
 
@@ -166,23 +167,35 @@ class ExpandableLayout @JvmOverloads constructor(
   private fun setTypeArray(a: TypedArray) {
     _isExpanded =
       a.getBoolean(R.styleable.ExpandableLayout_expandable_isExpanded, _isExpanded)
+
     _parentLayoutResource =
       a.getResourceId(R.styleable.ExpandableLayout_expandable_parentLayout,
         _parentLayoutResource)
+
     _secondLayoutResource =
       a.getResourceId(R.styleable.ExpandableLayout_expandable_secondLayout,
         _secondLayoutResource)
-    _spinnerDrawable = a.getDrawable(R.styleable.ExpandableLayout_expandable_spinner)
+
+    a.getResourceId(R.styleable.ExpandableLayout_expandable_spinner, -1).also {
+      if (it != -1) {
+        _spinnerDrawable = AppCompatResources.getDrawable(context, it)
+      }
+    }
+
     _showSpinner =
       a.getBoolean(R.styleable.ExpandableLayout_expandable_showSpinner, _showSpinner)
+
     _spinnerSize =
       a.getDimensionPixelSize(R.styleable.ExpandableLayout_expandable_spinner_size,
         _spinnerSize.toInt()).toFloat()
+
     _spinnerMargin =
       a.getDimensionPixelSize(R.styleable.ExpandableLayout_expandable_spinner_margin,
         _spinnerMargin.toInt()).toFloat()
+
     _spinnerColor =
       a.getColor(R.styleable.ExpandableLayout_expandable_spinner_color, _spinnerColor)
+
     val spinnerGravity = a.getInteger(R.styleable.ExpandableLayout_expandable_spinner_gravity,
       _spinnerGravity.value)
     when (spinnerGravity) {
