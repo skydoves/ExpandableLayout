@@ -17,7 +17,6 @@
 package com.skydoves.expandablelayout
 
 /** ExpandableAnimation is an animation attribute of the expanding and collapsing. */
-@Suppress("unused")
 enum class ExpandableAnimation(val value: Int) {
   NORMAL(0),
   ACCELERATE(1),

@@ -17,4 +17,4 @@
 package com.skydoves.expandablelayout
 
 @DslMarker
-annotation class ExpandableLayoutDsl
+internal annotation class ExpandableLayoutDsl

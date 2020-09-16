@@ -19,5 +19,10 @@ package com.skydoves.expandablelayout
 import android.content.Context
 
 /** creates an instance of [ExpandableLayout] by [ExpandableLayout.Builder] using kotlin dsl. */
-fun expandableLayout(context: Context, block: ExpandableLayout.Builder.() -> Unit): ExpandableLayout =
+@JvmSynthetic
+@ExpandableLayoutDsl
+fun expandableLayout(
+  context: Context,
+  block: ExpandableLayout.Builder.() -> Unit
+): ExpandableLayout =
   ExpandableLayout.Builder(context).apply(block).build()
