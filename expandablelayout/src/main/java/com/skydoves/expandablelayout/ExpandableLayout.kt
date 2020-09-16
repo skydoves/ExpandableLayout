@@ -169,12 +169,16 @@ class ExpandableLayout @JvmOverloads constructor(
       a.getBoolean(R.styleable.ExpandableLayout_expandable_isExpanded, _isExpanded)
 
     _parentLayoutResource =
-      a.getResourceId(R.styleable.ExpandableLayout_expandable_parentLayout,
-        _parentLayoutResource)
+      a.getResourceId(
+        R.styleable.ExpandableLayout_expandable_parentLayout,
+        _parentLayoutResource
+      )
 
     _secondLayoutResource =
-      a.getResourceId(R.styleable.ExpandableLayout_expandable_secondLayout,
-        _secondLayoutResource)
+      a.getResourceId(
+        R.styleable.ExpandableLayout_expandable_secondLayout,
+        _secondLayoutResource
+      )
 
     a.getResourceId(R.styleable.ExpandableLayout_expandable_spinner, -1).also {
       if (it != -1) {
@@ -186,18 +190,24 @@ class ExpandableLayout @JvmOverloads constructor(
       a.getBoolean(R.styleable.ExpandableLayout_expandable_showSpinner, _showSpinner)
 
     _spinnerSize =
-      a.getDimensionPixelSize(R.styleable.ExpandableLayout_expandable_spinner_size,
-        _spinnerSize.toInt()).toFloat()
+      a.getDimensionPixelSize(
+        R.styleable.ExpandableLayout_expandable_spinner_size,
+        _spinnerSize.toInt()
+      ).toFloat()
 
     _spinnerMargin =
-      a.getDimensionPixelSize(R.styleable.ExpandableLayout_expandable_spinner_margin,
-        _spinnerMargin.toInt()).toFloat()
+      a.getDimensionPixelSize(
+        R.styleable.ExpandableLayout_expandable_spinner_margin,
+        _spinnerMargin.toInt()
+      ).toFloat()
 
     _spinnerColor =
       a.getColor(R.styleable.ExpandableLayout_expandable_spinner_color, _spinnerColor)
 
-    val spinnerGravity = a.getInteger(R.styleable.ExpandableLayout_expandable_spinner_gravity,
-      _spinnerGravity.value)
+    val spinnerGravity = a.getInteger(
+      R.styleable.ExpandableLayout_expandable_spinner_gravity,
+      _spinnerGravity.value
+    )
     when (spinnerGravity) {
       SpinnerGravity.START.value -> _spinnerGravity = SpinnerGravity.START
       SpinnerGravity.END.value -> _spinnerGravity = SpinnerGravity.END
@@ -205,8 +215,10 @@ class ExpandableLayout @JvmOverloads constructor(
     this.duration =
       a.getInteger(R.styleable.ExpandableLayout_expandable_duration, duration.toInt()).toLong()
     val animation =
-      a.getInteger(R.styleable.ExpandableLayout_expandable_animation,
-        this.expandableAnimation.value)
+      a.getInteger(
+        R.styleable.ExpandableLayout_expandable_animation,
+        this.expandableAnimation.value
+      )
     when (animation) {
       ExpandableAnimation.NORMAL.value -> expandableAnimation = ExpandableAnimation.NORMAL
       ExpandableAnimation.ACCELERATE.value -> expandableAnimation = ExpandableAnimation.ACCELERATE
