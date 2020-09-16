@@ -367,6 +367,7 @@ class ExpandableLayout @JvmOverloads constructor(
   }
 
   /** sets an [OnExpandListener] to the [ExpandableLayout] using a lambda. */
+  @JvmSynthetic
   fun setOnExpandListener(block: (Boolean) -> Unit) {
     this.onExpandListener = object : OnExpandListener {
       override fun onExpand(isExpanded: Boolean) {
@@ -409,6 +410,7 @@ class ExpandableLayout @JvmOverloads constructor(
       this.expandableLayout.onExpandListener = value
     }
 
+    @JvmSynthetic
     fun setOnExpandListener(block: (Boolean) -> Unit) = apply {
       this.expandableLayout.onExpandListener = object : OnExpandListener {
         override fun onExpand(isExpanded: Boolean) {
