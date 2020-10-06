@@ -302,13 +302,8 @@ class ExpandableLayout @JvmOverloads constructor(
     return height
   }
 
-  /**
-   * This function is for supporting Java language.
-   * Expand the second layout with indicator animation.
-   */
-  fun expand() = expand(0)
-
   /** Expand the second layout with indicator animation. */
+  @JvmOverloads
   fun expand(@Px expandableHeight: Int = 0) {
     post {
       if (!isExpanded) {
