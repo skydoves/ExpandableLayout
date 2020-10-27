@@ -13,8 +13,8 @@ android {
         versionName versions.versionName
         vectorDrawables.useSupportLibrary = true
     }
-    viewBinding {
-        enabled = true
+    buildFeatures {
+        viewBinding = true
     }
 }
 
