@@ -18,70 +18,73 @@ package com.skydoves.expandablelayoutdemo
 
 import android.graphics.Color
 import android.os.Bundle
+import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import kotlinx.android.synthetic.main.activity_main.expandable
-import kotlinx.android.synthetic.main.activity_main.expandable1
-import kotlinx.android.synthetic.main.activity_main.expandable2
-import kotlinx.android.synthetic.main.layout_second.view.button0
-import kotlinx.android.synthetic.main.layout_second.view.button1
-import kotlinx.android.synthetic.main.layout_second.view.button2
-import kotlinx.android.synthetic.main.layout_second.view.button3
+import com.skydoves.expandablelayoutdemo.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    setContentView(R.layout.activity_main)
 
-    expandable.setOnExpandListener {
-      if (it) {
-        toast("expanded")
-        expandable.spinnerColor = Color.YELLOW
-      } else {
-        toast("collapse")
-      }
-    }
-    expandable.parentLayout.setOnClickListener {
-      if (expandable.isExpanded) {
-        expandable.collapse()
-      } else {
-        expandable.expand()
-      }
-    }
-    expandable.secondLayout.button0.setOnClickListener { toast("item0 clicked") }
-    expandable.secondLayout.button1.setOnClickListener { toast("item1 clicked") }
-    expandable.secondLayout.button2.setOnClickListener { toast("item2 clicked") }
-    expandable.secondLayout.button3.setOnClickListener { toast("item3 clicked") }
+    val binding = ActivityMainBinding.inflate(layoutInflater)
+    setContentView(binding.root)
 
-    expandable1.setOnExpandListener {
-      if (it) {
-        toast("expanded")
-      } else {
-        toast("collapse")
+    with(binding) {
+      expandable.setOnExpandListener {
+        if (it) {
+          toast("expanded")
+          expandable.spinnerColor = Color.YELLOW
+        } else {
+          toast("collapse")
+        }
       }
-    }
-    expandable1.parentLayout.setOnClickListener {
-      if (expandable1.isExpanded) {
-        expandable1.collapse()
-      } else {
-        expandable1.expand()
+      expandable.parentLayout.setOnClickListener {
+        if (expandable.isExpanded) {
+          expandable.collapse()
+        } else {
+          expandable.expand()
+        }
       }
-    }
-    expandable1.secondLayout.setOnClickListener { toast("clicked the second layout") }
+      expandable.secondLayout.findViewById<Button>(R.id.button0)
+        .setOnClickListener { toast("item0 clicked") }
+      expandable.secondLayout.findViewById<Button>(R.id.button1)
+        .setOnClickListener { toast("item1 clicked") }
+      expandable.secondLayout.findViewById<Button>(R.id.button2)
+        .setOnClickListener { toast("item2 clicked") }
+      expandable.secondLayout.findViewById<Button>(R.id.button3)
+        .setOnClickListener { toast("item3 clicked") }
 
-    expandable2.setOnExpandListener {
-      if (it) {
-        toast("expanded")
-      } else {
-        toast("collapse")
+      expandable1.setOnExpandListener {
+        if (it) {
+          toast("expanded")
+        } else {
+          toast("collapse")
+        }
       }
-    }
-    expandable2.parentLayout.setOnClickListener {
-      if (expandable2.isExpanded) {
-        expandable2.collapse()
-      } else {
-        expandable2.expand()
+      expandable1.parentLayout.setOnClickListener {
+        if (expandable1.isExpanded) {
+          expandable1.collapse()
+        } else {
+          expandable1.expand()
+        }
+      }
+      expandable1.secondLayout.setOnClickListener { toast("clicked the second layout") }
+
+      expandable2.setOnExpandListener {
+        if (it) {
+          toast("expanded")
+        } else {
+          toast("collapse")
+        }
+      }
+      expandable2.parentLayout.setOnClickListener {
+        if (expandable2.isExpanded) {
+          expandable2.collapse()
+        } else {
+          expandable2.expand()
+        }
       }
     }
   }

@@ -19,7 +19,6 @@ android {
 
 dependencies {
     implementation "com.google.android.material:material:$versions.googleMaterial"
-    implementation "com.github.skydoves:baserecyclerviewadapter:$versions.baseAdapter"
     implementation project(":expandablelayout")
 }
 
