@@ -356,6 +356,18 @@ class ExpandableLayout @JvmOverloads constructor(
     }
   }
 
+  /**
+   * If the layout is not expanded, expand the second layout.
+   * If the layout is already expanded, collapse the second layout.
+   */
+  fun toggleLayout() {
+    if (isExpanded) {
+      collapse()
+    } else {
+      expand()
+    }
+  }
+
   /** sets an [OnExpandListener] to the [ExpandableLayout]. */
   fun setOnExpandListener(onExpandListener: OnExpandListener) {
     this.onExpandListener = onExpandListener

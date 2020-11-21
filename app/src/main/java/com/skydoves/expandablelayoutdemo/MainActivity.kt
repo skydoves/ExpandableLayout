@@ -40,13 +40,7 @@ class MainActivity : AppCompatActivity() {
           toast("collapse")
         }
       }
-      expandable.parentLayout.setOnClickListener {
-        if (expandable.isExpanded) {
-          expandable.collapse()
-        } else {
-          expandable.expand()
-        }
-      }
+      expandable.parentLayout.setOnClickListener { expandable.toggleLayout() }
       expandable.secondLayout.findViewById<Button>(R.id.button0)
         .setOnClickListener { toast("item0 clicked") }
       expandable.secondLayout.findViewById<Button>(R.id.button1)
@@ -63,13 +57,7 @@ class MainActivity : AppCompatActivity() {
           toast("collapse")
         }
       }
-      expandable1.parentLayout.setOnClickListener {
-        if (expandable1.isExpanded) {
-          expandable1.collapse()
-        } else {
-          expandable1.expand()
-        }
-      }
+      expandable1.parentLayout.setOnClickListener { expandable1.toggleLayout() }
       expandable1.secondLayout.setOnClickListener { toast("clicked the second layout") }
 
       expandable2.setOnExpandListener {
@@ -79,13 +67,7 @@ class MainActivity : AppCompatActivity() {
           toast("collapse")
         }
       }
-      expandable2.parentLayout.setOnClickListener {
-        if (expandable2.isExpanded) {
-          expandable2.collapse()
-        } else {
-          expandable2.expand()
-        }
-      }
+      expandable2.parentLayout.setOnClickListener { expandable2.toggleLayout() }
     }
   }
 

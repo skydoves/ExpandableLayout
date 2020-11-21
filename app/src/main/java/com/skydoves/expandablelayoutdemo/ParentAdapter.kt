@@ -40,13 +40,7 @@ class ParentAdapter :
     val binding = ItemSectionBinding.inflate(LayoutInflater.from(parent.context), parent, false)
     return ParentViewHolder(binding).apply {
       with(binding.root) {
-        setOnClickListener {
-          if (isExpanded) {
-            collapse()
-          } else {
-            expand()
-          }
-        }
+        setOnClickListener { toggleLayout() }
       }
     }
   }
@@ -61,7 +55,6 @@ class ParentAdapter :
       parentLayout.setBackgroundColor(ContextCompat.getColor(context, sectionItem.color))
       secondLayout.findViewById<RecyclerView>(R.id.recyclerViewChild).adapter = childAdapter
       childAdapter.addItemList(sectionItem.itemList)
-      sectionItem.initailized = true
     }
   }
 
