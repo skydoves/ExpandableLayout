@@ -21,8 +21,7 @@ import android.content.Context
 /** creates an instance of [ExpandableLayout] by [ExpandableLayout.Builder] using kotlin dsl. */
 @JvmSynthetic
 @ExpandableLayoutDsl
-fun expandableLayout(
-  context: Context,
+inline fun Context.expandableLayout(
   block: ExpandableLayout.Builder.() -> Unit
 ): ExpandableLayout =
-  ExpandableLayout.Builder(context).apply(block).build()
+  ExpandableLayout.Builder(this).apply(block).build()

@@ -40,7 +40,18 @@ class ParentAdapter :
     val binding = ItemSectionBinding.inflate(LayoutInflater.from(parent.context), parent, false)
     return ParentViewHolder(binding).apply {
       with(binding.root) {
-        setOnClickListener { toggleLayout() }
+        setOnClickListener {
+          val position =
+            adapterPosition.takeIf { position -> position != RecyclerView.NO_POSITION }
+              ?: return@setOnClickListener
+          val item = items[position]
+          item.expanded = !item.expanded
+          notifyItemChanged(position)
+        }
+        parentLayoutResource = R.layout.item_section_parent
+        secondLayoutResource = R.layout.item_section_child
+        duration = 200L
+        secondLayout.findViewById<RecyclerView>(R.id.recyclerViewChild).adapter = childAdapter
       }
     }
   }
@@ -48,19 +59,19 @@ class ParentAdapter :
   override fun onBindViewHolder(holder: ParentViewHolder, position: Int) {
     val sectionItem = items[position]
     with(holder.binding.expandableLayout) {
-      parentLayoutResource = R.layout.item_section_parent
-      secondLayoutResource = R.layout.item_section_child
-      duration = 200L
+      if (sectionItem.expanded) {
+        expand()
+      } else {
+        collapse()
+      }
       parentLayout.findViewById<TextView>(R.id.title).text = sectionItem.title
       parentLayout.setBackgroundColor(ContextCompat.getColor(context, sectionItem.color))
-      secondLayout.findViewById<RecyclerView>(R.id.recyclerViewChild).adapter = childAdapter
       childAdapter.addItemList(sectionItem.itemList)
     }
   }
 
-  override fun onRowItemClick(position: Int, title: String, context: Context) {
+  override fun onRowItemClick(position: Int, title: String, context: Context) =
     Toast.makeText(context, "position : $position, title: $title", Toast.LENGTH_SHORT).show()
-  }
 
   override fun getItemCount() = items.size
 
