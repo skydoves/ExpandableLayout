@@ -20,6 +20,7 @@
       <enum name="normal" value="0" />
       <enum name="accelerate" value="1" />
       <enum name="bounce" value="2" />
+      <enum name="overshoot" value="3" />
     </attr>
   </declare-styleable>
 </resources>

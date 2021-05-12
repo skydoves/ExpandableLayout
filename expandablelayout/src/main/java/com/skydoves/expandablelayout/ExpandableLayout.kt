@@ -46,10 +46,15 @@ class ExpandableLayout @JvmOverloads constructor(
 
   lateinit var parentLayout: View
   lateinit var secondLayout: View
+
   private val binding: ExpandableLayoutFrameBinding =
     ExpandableLayoutFrameBinding.inflate(LayoutInflater.from(context), null, false)
 
   private var _isExpanded: Boolean = false
+
+  private var _isExpanding: Boolean = false
+
+  private var _isCollapsing: Boolean = false
 
   @LayoutRes
   private var _parentLayoutResource: Int = R.layout.expandable_layout_frame
@@ -76,6 +81,18 @@ class ExpandableLayout @JvmOverloads constructor(
     get() = _isExpanded
     private set(value) {
       _isExpanded = value
+    }
+
+  var isExpanding: Boolean
+    get() = _isExpanding
+    private set(value) {
+      _isExpanding = value
+    }
+
+  var isCollapsing: Boolean
+    get() = _isCollapsing
+    private set(value) {
+      _isCollapsing = value
     }
 
   var parentLayoutResource: Int
@@ -135,14 +152,15 @@ class ExpandableLayout @JvmOverloads constructor(
     }
 
   @Px
-  private var secondLayoutHeight: Int = 0
+  private var measuredSecondLayoutHeight: Int = 0
+
   var duration: Long = 250L
   var expandableAnimation: ExpandableAnimation = ExpandableAnimation.NORMAL
   var spinnerRotation: Int = -180
   var spinnerAnimate: Boolean = true
 
-  @JvmField
   var onExpandListener: OnExpandListener? = null
+    private set
 
   init {
     if (attributeSet != null) {
@@ -223,6 +241,7 @@ class ExpandableLayout @JvmOverloads constructor(
       ExpandableAnimation.NORMAL.value -> expandableAnimation = ExpandableAnimation.NORMAL
       ExpandableAnimation.ACCELERATE.value -> expandableAnimation = ExpandableAnimation.ACCELERATE
       ExpandableAnimation.BOUNCE.value -> expandableAnimation = ExpandableAnimation.BOUNCE
+      ExpandableAnimation.OVERSHOOT.value -> expandableAnimation = ExpandableAnimation.OVERSHOOT
     }
     this.spinnerAnimate =
       a.getBoolean(R.styleable.ExpandableLayout_expandable_spinner_animate, spinnerAnimate)
@@ -240,6 +259,7 @@ class ExpandableLayout @JvmOverloads constructor(
   }
 
   private fun updateExpandableLayout() {
+    visible(false)
     removeAllViews()
     updateParentLayout()
     updateSecondLayout()
@@ -247,23 +267,22 @@ class ExpandableLayout @JvmOverloads constructor(
   }
 
   private fun updateParentLayout() {
-    this.parentLayout = inflate(parentLayoutResource)
-    this.parentLayout.measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED)
-    this.binding.cover.addView(parentLayout)
-    this.binding.cover.updateLayoutParams { height = parentLayout.measuredHeight }
-    addView(binding.root)
+    this.parentLayout = inflate(parentLayoutResource).apply {
+      measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED)
+      binding.cover.addView(this)
+      binding.cover.updateLayoutParams { height = measuredHeight }
+      addView(binding.root)
+    }
   }
 
   private fun updateSecondLayout() {
-    secondLayout = inflate(secondLayoutResource)
-    secondLayout.visible(false)
-    addView(secondLayout)
-    secondLayout.post {
-      secondLayoutHeight = getMeasuredHeight(secondLayout)
-      secondLayout.visible(true)
-      with(secondLayout) {
+    secondLayout = inflate(secondLayoutResource).apply {
+      addView(this)
+      post {
+        measuredSecondLayoutHeight = getMeasuredHeight(this)
         updateLayoutParams { height = 0 }
         y = parentLayout.measuredHeight.toFloat()
+        this@ExpandableLayout.visible(true)
       }
     }
   }
@@ -290,8 +309,7 @@ class ExpandableLayout @JvmOverloads constructor(
   private fun getMeasuredHeight(view: View): Int {
     var height = view.height
     if (view is ViewGroup) {
-      for (i in 0 until view.childCount) {
-        val child = view.getChildAt(i)
+      (0 until view.childCount).map { view.getChildAt(it) }.forEach { child ->
         if (child is ExpandableLayout) {
           child.post {
             height += getMeasuredHeight(child)
@@ -306,27 +324,30 @@ class ExpandableLayout @JvmOverloads constructor(
   @JvmOverloads
   fun expand(@Px expandableHeight: Int = 0) {
     post {
-      if (!isExpanded) {
+      if (!isExpanded && !isExpanding) {
+        isExpanding = true
         ValueAnimator.ofFloat(0f, 1f).apply {
           duration = this@ExpandableLayout.duration
           applyInterpolator(expandableAnimation)
           addUpdateListener {
             val value = it.animatedValue as Float
             secondLayout.updateLayoutParams {
-              height = if (expandableHeight != 0) {
+              height = if (expandableHeight > 0) {
                 (expandableHeight * value).toInt() + parentLayout.height
               } else {
-                (secondLayoutHeight * value).toInt() + parentLayout.height
+                (measuredSecondLayoutHeight * value).toInt() + parentLayout.height
               }
             }
             if (spinnerAnimate) {
               binding.arrow.rotation = spinnerRotation * value
             }
+            if (value >= 1f) {
+              onExpandListener?.onExpand(isExpanded)
+              isExpanding = false
+              isExpanded = true
+            }
           }
-          isExpanded = true
-          onExpandListener?.onExpand(isExpanded)
-          start()
-        }
+        }.start()
       }
     }
   }
@@ -334,8 +355,9 @@ class ExpandableLayout @JvmOverloads constructor(
   /** Collapse the second layout with indicator animation. */
   fun collapse() {
     post {
-      if (isExpanded) {
+      if (isExpanded && !isCollapsing) {
         ValueAnimator.ofFloat(1f, 0f).apply {
+          isCollapsing = true
           duration = this@ExpandableLayout.duration
           applyInterpolator(expandableAnimation)
           addUpdateListener {
@@ -347,11 +369,13 @@ class ExpandableLayout @JvmOverloads constructor(
             if (spinnerAnimate) {
               binding.arrow.rotation = spinnerRotation * value
             }
+            if (value <= 0f) {
+              onExpandListener?.onExpand(isExpanded)
+              isCollapsing = false
+              isExpanded = false
+            }
           }
-          isExpanded = false
-          onExpandListener?.onExpand(isExpanded)
-          start()
-        }
+        }.start()
       }
     }
   }
@@ -376,7 +400,7 @@ class ExpandableLayout @JvmOverloads constructor(
   /** sets an [OnExpandListener] to the [ExpandableLayout] using a lambda. */
   @JvmSynthetic
   fun setOnExpandListener(block: (Boolean) -> Unit) {
-    this.onExpandListener = OnExpandListener { isExpanded -> block(isExpanded) }
+    this.onExpandListener = OnExpandListener(block)
   }
 
   private fun inflate(@LayoutRes resource: Int) =
